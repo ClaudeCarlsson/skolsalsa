@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+*.md
+*.log
+.env*
+!.env.example
+data/
+.vibe
+coverage/
+Dockerfile
+docker-compose.yml

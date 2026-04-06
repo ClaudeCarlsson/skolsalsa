@@ -1,0 +1,19 @@
+{
+  "name": "@skolsalsa/scraper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "node src/scrape-all.js",
+    "scrape:sample": "node src/scrape-sample.js",
+    "scrape:about": "node src/scrape-about.js",
+    "discover": "node src/discover.js",
+    "test": "node --test src/tests/*.test.js",
+    "test:quick": "node --test src/tests/rate-limiter.test.js src/tests/db.test.js",
+    "test:integration": "node --test src/tests/session.test.js src/tests/parser.test.js",
+    "test:e2e": "node --test src/tests/e2e.test.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}

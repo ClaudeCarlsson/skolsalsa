@@ -1,0 +1,13 @@
+node_modules/
+.next/
+data/*
+!data/salsa.db
+.env
+.env.*
+!.env.example
+*.log
+.vibe/
+coverage/
+*.db-wal
+*.db-shm
+.DS_Store

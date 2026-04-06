@@ -1,0 +1,30 @@
+{
+	email admin@skolsalsa.se
+}
+
+skolsalsa.se {
+	encode zstd gzip
+
+	reverse_proxy explorer:3000
+
+	# Limit request body (read-only app, no uploads expected)
+	request_body {
+		max_size 1MB
+	}
+
+	header {
+		# HSTS — tell browsers to always use HTTPS
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# Hide server identity
+		-Server
+	}
+
+	# Application-level rate limiting (60 req/min per IP) is handled
+	# by the Next.js API routes. Caddy standard does not include a
+	# rate-limit module. For proxy-level rate limiting, build a custom
+	# Caddy image with github.com/mholt/caddy-ratelimit.
+}
+
+www.skolsalsa.se {
+	redir https://skolsalsa.se{uri} permanent
+}

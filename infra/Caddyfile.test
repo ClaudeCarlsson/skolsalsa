@@ -1,0 +1,17 @@
+# Test Caddyfile — mirrors production but uses localhost with internal TLS
+# Caddy auto-generates a self-signed cert for localhost
+
+localhost {
+	encode zstd gzip
+
+	reverse_proxy explorer:3000
+
+	request_body {
+		max_size 1MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+}

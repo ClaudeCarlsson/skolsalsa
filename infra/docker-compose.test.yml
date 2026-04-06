@@ -1,0 +1,37 @@
+services:
+  explorer:
+    build:
+      context: ..
+      target: explorer
+    networks:
+      - skolsalsa-test
+    expose:
+      - "3000"
+    volumes:
+      - ../data/salsa.db:/app/data/salsa.db:ro
+    environment:
+      - NODE_ENV=production
+      - DATABASE_PATH=/app/data/salsa.db
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    networks:
+      - skolsalsa-test
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./Caddyfile.test:/etc/caddy/Caddyfile:ro
+    depends_on:
+      explorer:
+        condition: service_healthy
+
+networks:
+  skolsalsa-test:
+    name: skolsalsa-test

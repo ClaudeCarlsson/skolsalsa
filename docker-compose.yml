@@ -1,0 +1,51 @@
+services:
+  discover:
+    build:
+      context: .
+      target: scraper
+    command: ["node", "packages/scraper/src/discover.js"]
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+    restart: "no"
+
+  scrape:
+    build:
+      context: .
+      target: scraper
+    command: ["node", "packages/scraper/src/scrape-all.js"]
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      discover:
+        condition: service_completed_successfully
+    restart: "no"
+
+  explorer:
+    build:
+      context: .
+      target: explorer
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data:ro
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  test:
+    build:
+      context: .
+      target: test
+    command: ["node", "--test", "packages/scraper/src/tests/"]
+    volumes:
+      - ./data:/app/data
+    restart: "no"

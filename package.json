@@ -1,0 +1,19 @@
+{
+  "name": "skolsalsa",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "scrape": "npm run scrape --workspace=packages/scraper",
+    "scrape:sample": "npm run scrape:sample --workspace=packages/scraper",
+    "discover": "npm run discover --workspace=packages/scraper",
+    "db:migrate": "npm run migrate --workspace=packages/db",
+    "test": "npm run test --workspace=packages/scraper",
+    "test:quick": "npm run test:quick --workspace=packages/scraper",
+    "test:integration": "npm run test:integration --workspace=packages/scraper",
+    "test:e2e": "npm run test:e2e --workspace=packages/scraper",
+    "dev": "npm run dev --workspace=packages/explorer",
+    "build": "npm run build --workspace=packages/explorer"
+  }
+}
