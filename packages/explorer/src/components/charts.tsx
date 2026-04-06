@@ -65,13 +65,17 @@ const MODEL_CHANGES = [
 function ModelChangeDot({ cx, cy, label }: { cx: number; cy: number; label: string }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <g onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ cursor: "pointer" }}>
-      <circle cx={cx} cy={cy} r={5} fill="#8b5cf6" opacity={0.8} />
-      <circle cx={cx} cy={cy} r={8} fill="transparent" />
+    <g
+      onMouseEnter={(e) => { e.stopPropagation(); setHovered(true); }}
+      onMouseLeave={() => setHovered(false)}
+      style={{ cursor: "pointer" }}
+    >
+      <circle cx={cx} cy={cy} r={5} fill="#8b5cf6" opacity={0.85} />
+      <circle cx={cx} cy={cy} r={10} fill="transparent" />
       {hovered && (
         <g>
-          <rect x={cx - 55} y={cy - 28} width={110} height={22} rx={4} fill="#1e1b4b" opacity={0.9} />
-          <text x={cx} y={cy - 13} textAnchor="middle" fill="white" fontSize={11} fontFamily={CHART_FONT} fontWeight={500}>
+          <rect x={cx - 60} y={cy - 30} width={120} height={22} rx={5} fill="#1e1b4b" opacity={0.92} />
+          <text x={cx} y={cy - 15} textAnchor="middle" fill="white" fontSize={11} fontFamily={CHART_FONT} fontWeight={500}>
             {label}
           </text>
         </g>
@@ -80,26 +84,51 @@ function ModelChangeDot({ cx, cy, label }: { cx: number; cy: number; label: stri
   );
 }
 
-function ModelChangeLines({ years, lang, chartHeight }: { years: number[]; lang: Lang; chartHeight?: number }) {
+function ModelChangeLines({ years, lang, yAxisId }: { years: number[]; lang: Lang; yAxisId?: string }) {
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
   const visible = MODEL_CHANGES.filter((m) => m.year >= minYear && m.year <= maxYear);
+  if (visible.length === 0) return null;
   return (
     <>
       {visible.map((m) => (
         <ReferenceLine
           key={m.year}
           x={m.year}
+          yAxisId={yAxisId}
           stroke="#c4b5fd"
           strokeDasharray="4 3"
           strokeWidth={1.5}
+          ifOverflow="extendDomain"
           label={({ viewBox }: { viewBox: { x: number; y: number; height: number } }) => {
-            const bottomY = viewBox.y + (viewBox.height || chartHeight || 280);
+            if (!viewBox || !viewBox.x) return null;
+            const bottomY = viewBox.y + (viewBox.height || 250);
             return <ModelChangeDot cx={viewBox.x} cy={bottomY} label={t(m.key, lang)} />;
           }}
         />
       ))}
     </>
+  );
+}
+
+// Custom tooltip that deduplicates entries sharing the same dataKey
+function DeduplicatedTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ dataKey: string; name: string; value: number; color: string }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  const seen = new Set<string>();
+  const unique = payload.filter((entry) => {
+    if (seen.has(entry.dataKey)) return false;
+    seen.add(entry.dataKey);
+    return true;
+  });
+  return (
+    <div style={tooltipStyle} className="p-2.5">
+      <p style={{ fontWeight: 600, marginBottom: 4, fontFamily: CHART_FONT }}>{label}</p>
+      {unique.map((entry, i) => (
+        <p key={i} style={{ color: entry.color, fontSize: 13, fontFamily: CHART_FONT, margin: "2px 0" }}>
+          {entry.name}: {entry.value ?? "\u2013"}
+        </p>
+      ))}
+    </div>
   );
 }
 
@@ -133,9 +162,8 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} domain={["auto", "auto"]} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Legend wrapperStyle={legendStyle} />
-          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Area
             type="monotone"
             dataKey="predicted_merit_value"
@@ -162,6 +190,7 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
             strokeDasharray="6 3"
             dot={false}
           />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
@@ -192,13 +221,13 @@ export function ResidualChart({ data, lang }: MeritChartProps) {
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
-          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1.5} />
           <Bar dataKey="residual_merit" name={t("chart.residual", lang)} radius={[4, 4, 0, 0]}>
             {withColor.map((entry, i) => (
               <rect key={i} fill={entry.fill} />
             ))}
           </Bar>
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -230,7 +259,6 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
-          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           <YAxis
             yAxisId="left"
             tick={axisTickStyle}
@@ -263,6 +291,7 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
             strokeWidth={2}
             dot={{ r: 2.5, fill: COLORS.green, strokeWidth: 0 }}
           />
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} yAxisId="left" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
@@ -286,7 +315,6 @@ export function SchoolCountChart({
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
-          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           <Bar
             dataKey="school_count"
             name={t("chart.schools", lang)}
@@ -294,6 +322,7 @@ export function SchoolCountChart({
             fillOpacity={0.75}
             radius={[4, 4, 0, 0]}
           />
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -327,7 +356,6 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
-          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           {schools.map((s, i) => (
             <Line
               key={s.code}
@@ -341,6 +369,7 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
               connectNulls
             />
           ))}
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -377,7 +406,6 @@ export function BackgroundChart({
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
-          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Line
             type="monotone"
             dataKey="pct_foreign_background"
@@ -405,6 +433,7 @@ export function BackgroundChart({
             dot={{ r: 2.5, fill: COLORS.purple, strokeWidth: 0 }}
             connectNulls
           />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -437,7 +466,6 @@ export function EligibilityChart({
           <YAxis tick={axisTickStyle} domain={[0, 100]} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
-          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Area
             type="monotone"
             dataKey="pct_eligible_gymnasiet"
@@ -456,6 +484,7 @@ export function EligibilityChart({
             strokeDasharray="6 3"
             dot={false}
           />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

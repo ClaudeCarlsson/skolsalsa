@@ -136,6 +136,18 @@ export default async function AboutPage() {
               lang,
             )}
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-4">
+            <p className="font-medium text-blue-800 mb-2">
+              {c("Tänk på det så här", "Think of it this way", lang)}
+            </p>
+            <p className="text-blue-900 text-sm">
+              {c(
+                "Föreställ dig två skolor med identiska meritvärden på 220 poäng. Skola A har föräldrar med hög utbildning och få nyinvandrade elever. Skola B har föräldrar med låg utbildning och många nyinvandrade elever. Utan SALSA ser de likvärdiga ut. Men SALSA visar att Skola A presterade under det förväntade (negativ residual) medan Skola B presterade långt över det förväntade (positiv residual) — givet sina förutsättningar. SALSA synliggör alltså det som inte syns i råsiffrorna.",
+                "Imagine two schools with identical merit values of 220 points. School A has parents with high education and few newly arrived students. School B has parents with low education and many newly arrived students. Without SALSA, they look equivalent. But SALSA shows that School A performed below expectation (negative residual) while School B performed far above expectation (positive residual) — given their conditions. SALSA makes visible what raw numbers hide.",
+                lang,
+              )}
+            </p>
+          </div>
           <p>
             {c(
               "Den nuvarande modellen (sedan 2015) använder dessa ",
@@ -178,6 +190,87 @@ export default async function AboutPage() {
         </CardContent>
       </Card>
 
+      {/* How the model works — step by step */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{c("Hur modellen fungerar — steg för steg", "How the model works — step by step", lang)}</CardTitle>
+          <CardDescription>
+            {c(
+              "En förenklad genomgång av beräkningen",
+              "A simplified walkthrough of the calculation",
+              lang,
+            )}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 text-[15px] leading-relaxed">
+          <div className="space-y-6">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">1</div>
+              <div>
+                <h4 className="font-semibold mb-1">{c("Samla in bakgrundsdata", "Collect background data", lang)}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "För varje skola samlas tre bakgrundsfaktorer in: föräldrarnas genomsnittliga utbildningsnivå (skala 1–3), andelen nyinvandrade elever och andelen pojkar. Dessa uppgifter kommer från registerdata och är alltså inte något skolan själv rapporterar.",
+                    "For each school, three background factors are collected: parents' average education level (scale 1–3), share of newly arrived students, and share of boys. This data comes from national registers, not from the schools themselves.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">2</div>
+              <div>
+                <h4 className="font-semibold mb-1">{c("Beräkna förväntat resultat", "Calculate predicted result", lang)}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "En regressionsmodell tränas på alla skolor i Sverige samma år. Modellen hittar det statistiska sambandet mellan bakgrundsfaktorerna och betygsresultaten. Utifrån detta beräknas ett förväntat meritvärde och en förväntad behörighetsgrad för varje skola — det resultat man skulle förvänta sig om skolan presterade som riksgenomsnittet för skolor med liknande elevsammansättning.",
+                    "A regression model is trained on all schools in Sweden for that year. The model finds the statistical relationship between background factors and grade results. From this, a predicted merit value and predicted eligibility rate are calculated for each school — the result you would expect if the school performed like the national average for schools with a similar student composition.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">3</div>
+              <div>
+                <h4 className="font-semibold mb-1">{c("Beräkna residualen", "Calculate the residual", lang)}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "Residualen är helt enkelt: faktiskt resultat minus förväntat resultat. En skola med meritvärde 240 och förväntat värde 220 har residual +20. Det betyder att skolan presterade 20 poäng bättre än vad bakgrundsfaktorerna förutsade. Samma beräkning görs för gymnasiebehörighet.",
+                    "The residual is simply: actual result minus predicted result. A school with merit value 240 and predicted value 220 has residual +20. This means the school performed 20 points better than what the background factors predicted. The same calculation is done for gymnasiet eligibility.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">4</div>
+              <div>
+                <h4 className="font-semibold mb-1">{c("Tolka resultatet", "Interpret the result", lang)}</h4>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "Residualen visar hur en skola presterar i förhållande till förväntningarna. Den säger inte varför — den visar bara att det finns en avvikelse. Positiv residual kan bero på bra undervisning, men också på faktorer som modellen inte fångar (motivation, skolkultur, kognitiv förmåga). Därför bör residualen alltid tolkas tillsammans med annan information.",
+                    "The residual shows how a school performs relative to expectations. It doesn't say why — it only shows that there is a deviation. A positive residual could be due to good teaching, but also factors the model doesn't capture (motivation, school culture, cognitive ability). Therefore, the residual should always be interpreted alongside other information.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-muted/50 rounded-lg p-4 mt-4">
+            <p className="text-sm font-medium mb-1">{c("Förklaringsgrad", "Explanatory power", lang)}</p>
+            <p className="text-sm text-muted-foreground">
+              {c(
+                "Den nuvarande modellens justerade R² är ~53% för meritvärden och ~52% för behörighet. Det innebär att bakgrundsfaktorerna förklarar ungefär hälften av skillnaderna mellan skolor. Den andra hälften beror på faktorer som inte ingår i modellen — undervisningskvalitet, ledarskap, elevernas motivation, specialpedagogiska insatser och mycket annat. En hög förklaringsgrad betyder inte att bakgrunden determinerar resultatet; den visar att bakgrundsfaktorerna har ett starkt statistiskt samband med resultaten på skolnivå.",
+                "The current model's adjusted R² is ~53% for merit values and ~52% for eligibility. This means background factors explain roughly half of the differences between schools. The other half is due to factors not in the model — teaching quality, leadership, student motivation, special education efforts, and much more. A high explanatory power does not mean background determines the outcome; it shows that background factors have a strong statistical association with results at the school level.",
+                lang,
+              )}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key metrics explained */}
       <Card>
         <CardHeader>
@@ -190,8 +283,8 @@ export default async function AboutPage() {
             </h3>
             <p>
               {c(
-                "Det genomsnittliga betygspoengen för elever som avslutar årskurs 9 (grundskolan). Beräknas utifrån elevens 16 eller 17 bästa ämnen. Det teoretiska maxvärdet är 340 poäng (17 ämnen × A=20 poäng).",
-                "The average grade point for students completing year 9 (compulsory school). Calculated from the student's best 16 or 17 subjects. The theoretical maximum is 340 points (17 subjects × A=20 points).",
+                "Det genomsnittliga betygspoengen för elever som avslutar årskurs 9 (grundskolan). Beräknas utifrån elevens 16 eller 17 bästa ämnen. Det teoretiska maxvärdet är 340 poäng (17 ämnen × A=20 poäng). Betygsskalan är A–F där A ger 20 poäng, B ger 17.5, C ger 15, D ger 12.5, E ger 10 och F ger 0. Sedan 2015 beräknas meritvärdet utifrån max 17 ämnen (moderna språk som språkval kan adderas); före 2015 var det max 16 ämnen.",
+                "The average grade point for students completing year 9 (compulsory school). Calculated from the student's best 16 or 17 subjects. The theoretical maximum is 340 points (17 subjects × A=20 points). The grading scale is A–F where A gives 20 points, B gives 17.5, C gives 15, D gives 12.5, E gives 10, and F gives 0. Since 2015, the merit value is calculated from up to 17 subjects (modern languages as language choice can be added); before 2015 it was max 16 subjects.",
                 lang,
               )}
             </p>
@@ -205,8 +298,8 @@ export default async function AboutPage() {
             </h3>
             <p>
               {c(
-                "Vad SALSA-regressionsmodellen förutsäger att en skolas genomsnittliga meritvärde bör vara, givet elevernas demografiska förutsättningar. Skolor med liknande bakgrund får liknande modellberäknade värden.",
-                "What the SALSA regression model predicts a school's average merit value should be, given the students' demographic characteristics. Schools with similar backgrounds receive similar predicted values.",
+                "Vad SALSA-regressionsmodellen förutsäger att en skolas genomsnittliga meritvärde bör vara, givet elevernas demografiska förutsättningar. Skolor med liknande bakgrund får liknande modellberäknade värden. Det modellberäknade värdet är inte ett mål som skolan ska nå — det är det statistiska genomsnittet för skolor med samma förutsättningar. En skola med högt utbildade föräldrar får ett högt förväntat värde, inte för att den är \"bättre\", utan för att den statistiska normen för sådana skolor är högre.",
+                "What the SALSA regression model predicts a school's average merit value should be, given the students' demographic characteristics. Schools with similar backgrounds receive similar predicted values. The predicted value is not a target the school should reach — it is the statistical average for schools with similar conditions. A school with highly educated parents gets a high predicted value, not because it is \"better\", but because the statistical norm for such schools is higher.",
                 lang,
               )}
             </p>
@@ -334,6 +427,13 @@ export default async function AboutPage() {
                   lang,
                 )}
               </li>
+              <li>
+                {c(
+                  "Betygsinflation kan påverka jämförelser över tid. Om betygen generellt stiger snabbare än vad bakgrundsfaktorerna förutsäger, kan genomsnittsresidualen för alla skolor förändras. SALSA kalibreras om varje år, men trenden i absoluta meritvärden bör ändå tolkas med medvetenhet om att betygsnormer kan ha förändrats.",
+                  "Grade inflation can affect comparisons over time. If grades generally rise faster than background factors predict, the average residual across all schools can shift. SALSA is recalibrated each year, but the trend in absolute merit values should still be interpreted with awareness that grading norms may have changed.",
+                  lang,
+                )}
+              </li>
             </ul>
           </div>
           <p>
@@ -343,6 +443,70 @@ export default async function AboutPage() {
               lang,
             )}
           </p>
+        </CardContent>
+      </Card>
+
+      {/* Reading the charts */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{c("Läsa diagrammen", "Reading the charts", lang)}</CardTitle>
+          <CardDescription>
+            {c(
+              "Vad de vertikala linjerna och symbolerna i diagrammen betyder",
+              "What the vertical lines and symbols in the charts mean",
+              lang,
+            )}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 text-[15px] leading-relaxed">
+          <p>
+            {c(
+              "I alla tidsdiagram på denna sajt ser du streckade vertikala linjer med en liten punkt. Dessa markerar år då SALSA-modellens metod ändrades. Håll muspekaren över punkten för att se vilken modelländring som skedde.",
+              "In all time-series charts on this site, you will see dashed vertical lines with a small dot. These mark years when the SALSA model's methodology changed. Hover over the dot to see which model change occurred.",
+              lang,
+            )}
+          </p>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 w-3 h-3 rounded-full bg-violet-400 shrink-0" />
+              <div>
+                <p className="font-medium text-sm">{c("2013 — Modell 2", "2013 — Model 2", lang)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "\"Andel födda utomlands\" och \"andel med utländsk bakgrund\" ersattes med \"andel nyinvandrade\". Detta kan skapa ett hopp i data eftersom variabeln mäter olika saker.",
+                    "\"Share born abroad\" and \"share with foreign background\" were replaced with \"share of newly arrived\". This can create a jump in data since the variable measures different things.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 w-3 h-3 rounded-full bg-violet-400 shrink-0" />
+              <div>
+                <p className="font-medium text-sm">{c("2015 — Modell 3 + 17 ämnen", "2015 — Model 3 + 17 subjects", lang)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "Elever med okänd bakgrund räknas nu som nyinvandrade. Dessutom ändrades meritvärdesberäkningen från max 16 till max 17 ämnen, vilket höjer det möjliga maxvärdet från 320 till 340 poäng. Meritvärden efter 2015 är därför inte direkt jämförbara med tidigare år.",
+                    "Students with unknown background are now counted as newly arrived. Additionally, the merit calculation changed from max 16 to max 17 subjects, raising the possible maximum from 320 to 340 points. Merit values after 2015 are therefore not directly comparable with earlier years.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 w-3 h-3 rounded-full bg-violet-400 shrink-0" />
+              <div>
+                <p className="font-medium text-sm">{c("2016 — Modell 4 (specialår)", "2016 — Model 4 (special year)", lang)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {c(
+                    "Under 2015–2016 kom många flyktingar till Sverige. Våren 2016 var det avsevärt fler elever utan personnummer i årskurs 9. För att minska risken för missvisande jämförelser exkluderades dessa elever helt från SALSA 2016. Detta gör att 2016 sticker ut i trenddata och bör tolkas med extra försiktighet.",
+                    "During 2015–2016, many refugees arrived in Sweden. In spring 2016, there were significantly more students without personal identity numbers in year 9. To reduce the risk of misleading comparisons, these students were entirely excluded from SALSA 2016. This makes 2016 stand out in trend data and should be interpreted with extra caution.",
+                    lang,
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -438,6 +602,22 @@ export default async function AboutPage() {
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+            <p>
+              {c(
+                "Varje modellbyte innebär att det modellberäknade värdet beräknas på ett delvis nytt sätt. Detta kan leda till hopp i residualerna vid övergångarna, även om skolorna själva inte förändrats. I diagrammen markeras dessa övergångar med streckade vertikala linjer.",
+                "Each model change means the predicted value is calculated in a partially new way. This can cause jumps in residuals at the transitions, even if the schools themselves haven't changed. In the charts, these transitions are marked with dashed vertical lines.",
+                lang,
+              )}
+            </p>
+            <p>
+              {c(
+                "Den viktigaste förändringen skedde 2015 då meritvärdesberäkningen ändrades från max 16 till max 17 ämnen. Detta höjde de genomsnittliga meritvärdena nationellt och gör att absoluta merittal före och efter 2015 inte är direkt jämförbara. Residualerna påverkas dock inte i samma grad, eftersom både det faktiska och det förväntade värdet beräknas på samma sätt för ett givet år.",
+                "The most significant change occurred in 2015 when the merit calculation changed from max 16 to max 17 subjects. This raised average national merit values and means absolute merit numbers before and after 2015 are not directly comparable. However, residuals are less affected, since both the actual and predicted values are calculated the same way for a given year.",
+                lang,
+              )}
+            </p>
           </div>
         </CardContent>
       </Card>
