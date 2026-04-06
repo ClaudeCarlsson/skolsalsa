@@ -90,10 +90,10 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
           <Area
             type="monotone"
             dataKey="predicted_merit_value"
-            name={t("chart.predictedModel", lang)}
             fill={COLORS.blue}
             fillOpacity={0.06}
             stroke="none"
+            legendType="none"
           />
           <Line
             type="monotone"
