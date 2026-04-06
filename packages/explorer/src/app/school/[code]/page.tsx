@@ -116,8 +116,8 @@ export default async function SchoolPage({
           {municipality && (
             <span className="text-muted-foreground">{municipality}</span>
           )}
-          <Badge variant={school?.is_public ? "secondary" : "outline"}>
-            {school?.is_public ? t("common.kommunal", lang) : t("common.enskild", lang)}
+          <Badge variant={school?.is_public === 1 ? "secondary" : "outline"}>
+            {school?.is_public === 1 ? t("common.kommunal", lang) : t("common.enskild", lang)}
           </Badge>
           <span className="text-sm text-muted-foreground">
             {results.length} {t("school.yearsOfData", lang)}

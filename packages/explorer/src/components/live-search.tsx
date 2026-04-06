@@ -107,11 +107,11 @@ export function LiveSearch({ initialQuery = "", lang }: { initialQuery?: string;
                   </td>
                   <td className="py-2 px-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      s.is_public
+                      s.is_public === 1
                         ? "bg-secondary text-secondary-foreground"
                         : "border text-muted-foreground"
                     }`}>
-                      {s.is_public ? t("common.kommunal", lang) : t("common.enskild", lang)}
+                      {s.is_public === 1 ? t("common.kommunal", lang) : t("common.enskild", lang)}
                     </span>
                   </td>
                   <td className="py-2 px-3 text-right tabular-nums">

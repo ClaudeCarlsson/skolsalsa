@@ -119,7 +119,7 @@ export default async function MunicipalityPage({
           headers={[t("common.school", lang), t("common.type", lang), t("common.latestYear", lang), t("common.merit", lang), t("common.residual", lang), t("common.eligible", lang), t("common.years", lang)]}
           rows={schools.map((s) => [
             s.name,
-            s.is_public ? t("common.kommunal", lang) : t("common.enskild", lang),
+            s.is_public === 1 ? t("common.kommunal", lang) : t("common.enskild", lang),
             s.latest_year,
             s.latest_merit,
             s.latest_residual,
@@ -154,8 +154,8 @@ export default async function MunicipalityPage({
                   </Link>
                 </td>
                 <td className="py-2 px-3">
-                  <Badge variant={s.is_public ? "secondary" : "outline"}>
-                    {s.is_public ? t("common.kommunal", lang) : t("common.enskild", lang)}
+                  <Badge variant={s.is_public === 1 ? "secondary" : "outline"}>
+                    {s.is_public === 1 ? t("common.kommunal", lang) : t("common.enskild", lang)}
                   </Badge>
                 </td>
                 <td className="py-2 px-3 text-right tabular-nums">

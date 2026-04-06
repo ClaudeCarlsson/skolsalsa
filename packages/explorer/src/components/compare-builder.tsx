@@ -161,7 +161,7 @@ export function CompareBuilder({
                   <div className="font-medium text-sm truncate">{s.name}</div>
                   <div className="text-xs text-muted-foreground">
                     {s.municipality_name} &middot;{" "}
-                    {s.is_public ? t("common.kommunal", lang) : t("common.enskild", lang)}
+                    {s.is_public === 1 ? t("common.kommunal", lang) : t("common.enskild", lang)}
                     {s.latest_merit !== null && ` \u00B7 ${t("common.merit", lang)}: ${s.latest_merit}`}
                   </div>
                 </div>
