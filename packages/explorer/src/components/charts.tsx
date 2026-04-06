@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -61,25 +62,40 @@ const MODEL_CHANGES = [
   { year: 2016, key: "chart.model4" as const },
 ];
 
-function ModelChangeLines({ years, lang }: { years: number[]; lang: Lang }) {
+function ModelChangeDot({ cx, cy, label }: { cx: number; cy: number; label: string }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <g onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ cursor: "pointer" }}>
+      <circle cx={cx} cy={cy} r={5} fill="#8b5cf6" opacity={0.8} />
+      <circle cx={cx} cy={cy} r={8} fill="transparent" />
+      {hovered && (
+        <g>
+          <rect x={cx - 55} y={cy - 28} width={110} height={22} rx={4} fill="#1e1b4b" opacity={0.9} />
+          <text x={cx} y={cy - 13} textAnchor="middle" fill="white" fontSize={11} fontFamily={CHART_FONT} fontWeight={500}>
+            {label}
+          </text>
+        </g>
+      )}
+    </g>
+  );
+}
+
+function ModelChangeLines({ years, lang, chartHeight }: { years: number[]; lang: Lang; chartHeight?: number }) {
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
+  const visible = MODEL_CHANGES.filter((m) => m.year >= minYear && m.year <= maxYear);
   return (
     <>
-      {MODEL_CHANGES.filter((m) => m.year >= minYear && m.year <= maxYear).map((m) => (
+      {visible.map((m) => (
         <ReferenceLine
           key={m.year}
           x={m.year}
           stroke="#c4b5fd"
-          strokeDasharray="4 4"
+          strokeDasharray="4 3"
           strokeWidth={1.5}
-          label={{
-            value: t(m.key, lang),
-            position: "insideTopRight",
-            fill: "#8b5cf6",
-            fontSize: 11,
-            fontFamily: CHART_FONT,
-            fontWeight: 500,
+          label={({ viewBox }: { viewBox: { x: number; y: number; height: number } }) => {
+            const bottomY = viewBox.y + (viewBox.height || chartHeight || 280);
+            return <ModelChangeDot cx={viewBox.x} cy={bottomY} label={t(m.key, lang)} />;
           }}
         />
       ))}
