@@ -31,16 +31,28 @@ infra/           # Production deployment (Caddy + Docker Compose)
 
 ### Explorer
 
-Next.js 16 application with server components reading directly from SQLite.
+Next.js 16 application with server components reading directly from SQLite. Fully bilingual (Swedish/English).
 
 **Pages:**
-- **Dashboard** — national trends, top/bottom performers, municipality ranking
+- **Dashboard** — national trends, top/bottom performers, municipality ranking, school type filter (all/municipal/independent)
 - **Municipalities** — browse all 290 municipalities
-- **School Detail** — 4 charts (merit trend, residual, eligibility, demographics) + full data table
+- **Municipality Detail** — trend chart + sortable school table with CSV export
+- **School Detail** — 4 charts (merit trend, residual, eligibility, demographics), residual explanation in plain language, full data table with CSV export
 - **Search** — live typeahead search by name or municipality
-- **Compare** — select up to 5 schools for side-by-side comparison
+- **Compare** — select up to 5 schools for side-by-side comparison (shareable URLs)
 - **Trends** — national averages over 28 years
-- **About** — methodology, data dictionary, SALSA model evolution
+- **Favorites** — star/bookmark schools, saved to localStorage, compare all with one click
+- **About** — methodology, data dictionary, SALSA model evolution (fully bilingual)
+
+**SEO:**
+- Dynamic sitemap.xml with all school and municipality pages
+- robots.txt
+- Per-page `<title>`, `<meta description>`, and Open Graph tags in both languages
+
+**Mobile:**
+- Responsive hamburger menu with sticky header
+- Touch-friendly tables with horizontal scroll
+- Adaptive grid layouts
 
 ### Scraper
 
@@ -77,7 +89,7 @@ cd skolsalsa/infra
 docker compose up -d
 ```
 
-This starts the Next.js app behind Caddy with automatic HTTPS via Let's Encrypt. See [infra/README.md](infra/README.md) for full deployment instructions.
+This starts the Next.js app behind Caddy with automatic HTTPS via Let's Encrypt. Auto-deploy via cron runs `deploy.sh` which fetches and resets to origin/main on changes.
 
 ## Testing
 

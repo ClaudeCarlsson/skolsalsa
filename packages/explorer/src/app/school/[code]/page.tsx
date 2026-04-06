@@ -112,7 +112,7 @@ export default async function SchoolPage({
           <h1 className="text-2xl font-bold">{name}</h1>
           <FavoriteButton schoolCode={code} lang={lang} />
         </div>
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex flex-wrap items-center gap-2 mt-1">
           {municipality && (
             <span className="text-muted-foreground">{municipality}</span>
           )}
