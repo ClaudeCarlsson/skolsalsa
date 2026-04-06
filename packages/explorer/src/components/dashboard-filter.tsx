@@ -19,7 +19,7 @@ type FilterType = "all" | "municipal" | "independent";
 interface Props {
   lang: Lang;
   year: number;
-  trends: NationalTrend[];
+  trends: Record<FilterType, NationalTrend[]>;
   distributions: Record<FilterType, DistributionStats | null>;
   topBottoms: Record<FilterType, { top: SalsaResult[]; bottom: SalsaResult[] }>;
   muniRankings: Record<FilterType, Array<{
@@ -45,6 +45,7 @@ export function DashboardFilter({
   const distribution = distributions[filter];
   const topBottom = topBottoms[filter];
   const muniRanking = muniRankings[filter];
+  const trendData = trends[filter];
 
   const filters: { key: FilterType; label: string }[] = [
     { key: "all", label: t("filter.all", lang) },
@@ -110,14 +111,14 @@ export function DashboardFilter({
       )}
 
       {/* National trend chart */}
-      {trends.length > 0 && (
+      {trendData.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>{t("dashboard.nationalTrends", lang)}</CardTitle>
             <CardDescription>{t("dashboard.nationalTrendsDesc", lang)}</CardDescription>
           </CardHeader>
           <CardContent>
-            <TrendChartClient data={trends} lang={lang} />
+            <TrendChartClient data={trendData} lang={lang} />
           </CardContent>
         </Card>
       )}

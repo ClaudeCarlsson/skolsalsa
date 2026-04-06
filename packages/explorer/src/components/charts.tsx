@@ -41,19 +41,19 @@ const tooltipStyle = {
   backgroundColor: "white",
   border: "1px solid #e5e7eb",
   borderRadius: "8px",
-  fontSize: "14px",
+  fontSize: "15px",
   fontFamily: CHART_FONT,
   boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
 };
 
 const legendStyle = {
-  fontSize: "14px",
+  fontSize: "15px",
   fontWeight: 500,
   fontFamily: CHART_FONT,
   paddingTop: "10px",
 };
 
-const axisTickStyle = { fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT };
+const axisTickStyle = { fill: "#6b7280", fontSize: 14, fontFamily: CHART_FONT };
 
 interface MeritChartProps {
   data: Array<{
@@ -183,13 +183,13 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
           <YAxis
             yAxisId="left"
             tick={axisTickStyle}
-            label={{ value: t("chart.meritAxis", lang), angle: -90, position: "insideLeft", fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT }}
+            label={{ value: t("chart.meritAxis", lang), angle: -90, position: "insideLeft", fill: "#6b7280", fontSize: 14, fontFamily: CHART_FONT }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             tick={axisTickStyle}
-            label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT }}
+            label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 14, fontFamily: CHART_FONT }}
           />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />

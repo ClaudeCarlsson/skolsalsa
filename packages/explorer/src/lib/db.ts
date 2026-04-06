@@ -171,19 +171,20 @@ export function searchSchools(query: string, limit = 50): SchoolSummary[] {
     .all(`%${escaped}%`, `%${escaped}%`, limit) as SchoolSummary[];
 }
 
-export function getNationalTrends(): NationalTrend[] {
+export function getNationalTrends(schoolType: SchoolType = "all"): NationalTrend[] {
+  const typeClause = schoolTypeClause("sr", schoolType);
   return getDb()
     .prepare(
       `SELECT
-         year,
-         ROUND(AVG(avg_merit_value), 1) as avg_merit,
-         ROUND(AVG(residual_merit), 1) as avg_residual,
-         ROUND(AVG(pct_eligible_gymnasiet), 1) as avg_eligible,
-         COUNT(DISTINCT school_code) as school_count
-       FROM salsa_results
-       WHERE data_suppressed = 0 AND avg_merit_value IS NOT NULL
-       GROUP BY year
-       ORDER BY year ASC`
+         sr.year,
+         ROUND(AVG(sr.avg_merit_value), 1) as avg_merit,
+         ROUND(AVG(sr.residual_merit), 1) as avg_residual,
+         ROUND(AVG(sr.pct_eligible_gymnasiet), 1) as avg_eligible,
+         COUNT(DISTINCT sr.school_code) as school_count
+       FROM salsa_results sr
+       WHERE sr.data_suppressed = 0 AND sr.avg_merit_value IS NOT NULL${typeClause}
+       GROUP BY sr.year
+       ORDER BY sr.year ASC`
     )
     .all() as NationalTrend[];
 }

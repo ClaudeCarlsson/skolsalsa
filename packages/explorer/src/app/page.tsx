@@ -35,7 +35,9 @@ export default async function Dashboard() {
   const lang = getLangFromCookie(cookieStore.get("lang")?.value);
 
   let stats: ReturnType<typeof getDashboardStats> = undefined as unknown as ReturnType<typeof getDashboardStats>;
-  let trends: ReturnType<typeof getNationalTrends> = [];
+  let trendsAll: ReturnType<typeof getNationalTrends> = [];
+  let trendsMunicipal: ReturnType<typeof getNationalTrends> = [];
+  let trendsIndependent: ReturnType<typeof getNationalTrends> = [];
   let distributionAll: ReturnType<typeof getYearDistributionFiltered> = null;
   let distributionMunicipal: ReturnType<typeof getYearDistributionFiltered> = null;
   let distributionIndependent: ReturnType<typeof getYearDistributionFiltered> = null;
@@ -48,7 +50,9 @@ export default async function Dashboard() {
 
   try {
     stats = getDashboardStats();
-    trends = getNationalTrends();
+    trendsAll = getNationalTrends("all");
+    trendsMunicipal = getNationalTrends("municipal");
+    trendsIndependent = getNationalTrends("independent");
     distributionAll = getYearDistributionFiltered(stats.max_year, "all");
     distributionMunicipal = getYearDistributionFiltered(stats.max_year, "municipal");
     distributionIndependent = getYearDistributionFiltered(stats.max_year, "independent");
@@ -132,7 +136,11 @@ export default async function Dashboard() {
       <DashboardFilter
         lang={lang}
         year={stats.max_year}
-        trends={trends}
+        trends={{
+          all: trendsAll,
+          municipal: trendsMunicipal,
+          independent: trendsIndependent,
+        }}
         distributions={{
           all: distributionAll ?? null,
           municipal: distributionMunicipal ?? null,

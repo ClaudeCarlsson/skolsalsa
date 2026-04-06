@@ -9,15 +9,12 @@ import type { SchoolSummary } from "@/lib/db";
 
 async function fetchSchoolData(codes: string[]): Promise<SchoolSummary[]> {
   if (codes.length === 0) return [];
-  const results = await Promise.all(
-    codes.map((code) =>
-      fetch(`/api/search?q=${code}`)
-        .then((r) => r.json())
-        .then((data: SchoolSummary[]) => data.find((s) => s.school_code === code) ?? null)
-        .catch(() => null)
-    )
-  );
-  return results.filter((s): s is SchoolSummary => s !== null);
+  try {
+    const resp = await fetch(`/api/favorites?codes=${codes.join(",")}`);
+    return await resp.json();
+  } catch {
+    return [];
+  }
 }
 
 interface State {
