@@ -35,21 +35,25 @@ const PALETTE = [
   COLORS.purple,
 ];
 
+const CHART_FONT = "'Inter', 'system-ui', '-apple-system', 'sans-serif'";
+
 const tooltipStyle = {
   backgroundColor: "white",
   border: "1px solid #e5e7eb",
   borderRadius: "8px",
-  fontSize: "13px",
+  fontSize: "14px",
+  fontFamily: CHART_FONT,
   boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
 };
 
 const legendStyle = {
-  fontSize: "13px",
+  fontSize: "14px",
   fontWeight: 500,
-  paddingTop: "8px",
+  fontFamily: CHART_FONT,
+  paddingTop: "10px",
 };
 
-const axisTickStyle = { fill: "#6b7280", fontSize: 12 };
+const axisTickStyle = { fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT };
 
 interface MeritChartProps {
   data: Array<{
@@ -179,13 +183,13 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
           <YAxis
             yAxisId="left"
             tick={axisTickStyle}
-            label={{ value: t("chart.meritAxis", lang), angle: -90, position: "insideLeft", fill: "#6b7280", fontSize: 12 }}
+            label={{ value: t("chart.meritAxis", lang), angle: -90, position: "insideLeft", fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             tick={axisTickStyle}
-            label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 12 }}
+            label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 13, fontFamily: CHART_FONT }}
           />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />

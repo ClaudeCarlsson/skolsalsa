@@ -86,8 +86,8 @@ export interface NationalTrend {
 export type SchoolType = "all" | "municipal" | "independent";
 
 function schoolTypeClause(alias: string, type: SchoolType): string {
-  if (type === "municipal") return ` AND ${alias}.huvudman = 'Kommunal'`;
-  if (type === "independent") return ` AND ${alias}.huvudman = 'Enskild'`;
+  if (type === "municipal") return ` AND ${alias}.huvudman = 'Kom.'`;
+  if (type === "independent") return ` AND ${alias}.huvudman = 'Ensk.'`;
   return "";
 }
 
