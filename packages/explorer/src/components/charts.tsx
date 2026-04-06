@@ -55,6 +55,38 @@ const legendStyle = {
 
 const axisTickStyle = { fill: "#6b7280", fontSize: 14, fontFamily: CHART_FONT };
 
+const MODEL_CHANGES = [
+  { year: 2013, key: "chart.model2" as const },
+  { year: 2015, key: "chart.model3" as const },
+  { year: 2016, key: "chart.model4" as const },
+];
+
+function ModelChangeLines({ years, lang }: { years: number[]; lang: Lang }) {
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+  return (
+    <>
+      {MODEL_CHANGES.filter((m) => m.year >= minYear && m.year <= maxYear).map((m) => (
+        <ReferenceLine
+          key={m.year}
+          x={m.year}
+          stroke="#c4b5fd"
+          strokeDasharray="4 4"
+          strokeWidth={1.5}
+          label={{
+            value: t(m.key, lang),
+            position: "insideTopRight",
+            fill: "#8b5cf6",
+            fontSize: 11,
+            fontFamily: CHART_FONT,
+            fontWeight: 500,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 interface MeritChartProps {
   data: Array<{
     year: number;
@@ -87,6 +119,7 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
           <YAxis tick={axisTickStyle} domain={["auto", "auto"]} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Area
             type="monotone"
             dataKey="predicted_merit_value"
@@ -143,6 +176,7 @@ export function ResidualChart({ data, lang }: MeritChartProps) {
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1.5} />
           <Bar dataKey="residual_merit" name={t("chart.residual", lang)} radius={[4, 4, 0, 0]}>
             {withColor.map((entry, i) => (
@@ -180,6 +214,7 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           <YAxis
             yAxisId="left"
             tick={axisTickStyle}
@@ -235,6 +270,7 @@ export function SchoolCountChart({
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           <Bar
             dataKey="school_count"
             name={t("chart.schools", lang)}
@@ -275,6 +311,7 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
+          <ModelChangeLines years={data.map((d) => d.year)} lang={lang} />
           {schools.map((s, i) => (
             <Line
               key={s.code}
@@ -324,6 +361,7 @@ export function BackgroundChart({
           <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Line
             type="monotone"
             dataKey="pct_foreign_background"
@@ -383,6 +421,7 @@ export function EligibilityChart({
           <YAxis tick={axisTickStyle} domain={[0, 100]} />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={legendStyle} />
+          <ModelChangeLines years={filtered.map((d) => d.year)} lang={lang} />
           <Area
             type="monotone"
             dataKey="pct_eligible_gymnasiet"

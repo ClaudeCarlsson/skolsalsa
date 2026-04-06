@@ -160,6 +160,9 @@ const translations = {
   "chart.predictedPct": { sv: "Modellberäknat %", en: "Predicted %" },
   "chart.meritAxis": { sv: "Meritvärde", en: "Merit" },
   "chart.eligibleAxis": { sv: "Behörighet %", en: "Eligible %" },
+  "chart.model2": { sv: "Modell 2", en: "Model 2" },
+  "chart.model3": { sv: "Modell 3 + 17 ämnen", en: "Model 3 + 17 subj." },
+  "chart.model4": { sv: "Modell 4 (special)", en: "Model 4 (special)" },
 
   // Navigation (new)
   "nav.favorites": { sv: "Mina skolor", en: "My Schools" },
