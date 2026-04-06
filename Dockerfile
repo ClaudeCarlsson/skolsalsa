@@ -60,6 +60,7 @@ COPY packages/explorer/ packages/explorer/
 COPY packages/db/ packages/db/
 RUN mkdir -p data && node packages/db/src/migrate.js
 WORKDIR /app/packages/explorer
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # ============================================

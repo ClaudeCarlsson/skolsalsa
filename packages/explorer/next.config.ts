@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -25,7 +26,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ["better-sqlite3"],
   turbopack: {
-    root: "../..",
+    root: path.resolve(__dirname, "../.."),
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
