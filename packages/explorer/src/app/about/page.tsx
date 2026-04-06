@@ -21,23 +21,24 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">About This Explorer</h1>
+        <h1 className="text-3xl font-bold">Om denna utforskare</h1>
         <p className="text-muted-foreground mt-2 text-lg">
-          An open tool for exploring Swedish school performance data from
-          Skolverket&apos;s SALSA model.
+          Ett &ouml;ppet verktyg f&ouml;r att utforska svensk skolstatistik
+          fr&aring;n Skolverkets SALSA-modell.
         </p>
       </div>
 
-      {/* What is this */}
+      {/* Vad är detta */}
       <Card>
         <CardHeader>
-          <CardTitle>What is SkolSalsa SALSA Explorer?</CardTitle>
+          <CardTitle>Vad &auml;r SkolSalsa SALSA-utforskaren?</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-[15px] leading-relaxed">
           <p>
-            This explorer provides free, open access to school performance data
-            from <strong>SALSA</strong> (Skolverkets Arbetsverktyg f&ouml;r
-            Lokala SambandsAnalyser) &mdash; a statistical model maintained by{" "}
+            Denna utforskare ger fri, &ouml;ppen tillg&aring;ng till
+            skolresultatdata fr&aring;n <strong>SALSA</strong> (Skolverkets
+            Arbetsverktyg f&ouml;r Lokala SambandsAnalyser) &mdash; en
+            statistisk modell som underh&aring;lls av{" "}
             <a
               href="https://www.skolverket.se"
               className="text-primary underline"
@@ -45,96 +46,101 @@ export default function AboutPage() {
               rel="noopener noreferrer"
             >
               Skolverket
-            </a>{" "}
-            (the Swedish National Agency for Education).
+            </a>
+            .
           </p>
           <p>
-            The data covers{" "}
+            Datan omfattar{" "}
             <strong>
               {stats
-                ? `${stats.total_schools.toLocaleString()} schools across ${stats.total_municipalities} municipalities`
-                : "all Swedish schools"}
+                ? `${stats.total_schools.toLocaleString("sv-SE")} skolor i ${stats.total_municipalities} kommuner`
+                : "alla svenska skolor"}
             </strong>
-            , spanning{" "}
+            , fr&aring;n{" "}
             <strong>
               {stats
-                ? `${stats.min_year} to ${stats.max_year} (${stats.max_year - stats.min_year + 1} years)`
-                : "1998 to present"}
+                ? `${stats.min_year} till ${stats.max_year} (${stats.max_year - stats.min_year + 1} \u00e5r)`
+                : "1998 till idag"}
             </strong>
-            , with a total of{" "}
+            , med totalt{" "}
             <strong>
               {stats
-                ? `${stats.total_records.toLocaleString()} data points`
-                : "tens of thousands of data points"}
+                ? `${stats.total_records.toLocaleString("sv-SE")} datapunkter`
+                : "tiotusentals datapunkter"}
             </strong>
-            . Both kommunala (municipal/public) and enskilda (independent/private)
-            schools are included.
+            . B&aring;de kommunala och enskilda (frist&aring;ende) skolor
+            ing&aring;r.
           </p>
         </CardContent>
       </Card>
 
-      {/* What is SALSA */}
+      {/* Vad är SALSA */}
       <Card>
         <CardHeader>
-          <CardTitle>What is SALSA?</CardTitle>
+          <CardTitle>Vad &auml;r SALSA?</CardTitle>
           <CardDescription>
             Skolverkets Arbetsverktyg f&ouml;r Lokala SambandsAnalyser
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-[15px] leading-relaxed">
           <p>
-            SALSA is a regression-based statistical model that compares each
-            school&apos;s actual results against what would be <em>predicted</em>{" "}
-            given the school&apos;s student population characteristics. The goal
-            is to enable fairer comparisons between schools by accounting for
-            differences in student backgrounds.
+            SALSA &auml;r en regressionsbaserad statistisk modell som
+            j&auml;mf&ouml;r varje skolas faktiska resultat med vad som
+            <em> f&ouml;rv&auml;ntas</em> givet skolans
+            elevsammans&auml;ttning. Syftet &auml;r att m&ouml;jligg&ouml;ra
+            r&auml;ttvisare j&auml;mf&ouml;relser mellan skolor genom att ta
+            h&auml;nsyn till skillnader i elevernas bakgrund.
           </p>
           <p>
-            The current model (since 2015) uses these{" "}
-            <strong>background factors</strong>:
+            Den nuvarande modellen (sedan 2015) anv&auml;nder dessa{" "}
+            <strong>bakgrundsfaktorer</strong>:
           </p>
           <ul className="list-disc pl-6 space-y-1">
             <li>
-              <strong>Parents&apos; education level</strong> (F&ouml;r&auml;ldrarnas
-              utbildningsniv&aring;) &mdash; the single strongest predictor. Average
-              education on a 1&ndash;3 scale where 3 = university education.
+              <strong>F&ouml;r&auml;ldrarnas utbildningsniv&aring;</strong>{" "}
+              &mdash; den enskilt starkaste prediktorn. Genomsnittlig
+              utbildningsniv&aring; p&aring; en skala 1&ndash;3 d&auml;r 3 =
+              h&ouml;gskoleutbildning.
             </li>
             <li>
-              <strong>Share of newly arrived students</strong> (Andel
-              nyinvandrade) &mdash; students registered in Sweden within the last
-              4 years, plus students with unknown background (since 2015).
+              <strong>Andel nyinvandrade elever</strong> &mdash; elever
+              folkbokf&ouml;rda i Sverige de senaste 4 &aring;ren, plus elever
+              med ok&auml;nd bakgrund (sedan 2015).
             </li>
             <li>
-              <strong>Share of boys</strong> (Andel pojkar) &mdash; gender
-              composition of the student body.
+              <strong>Andel pojkar</strong> &mdash; k&ouml;nsf&ouml;rdelningen
+              bland eleverna.
             </li>
           </ul>
           <p className="text-sm text-muted-foreground mt-3">
-            The model has evolved over time. Before 2013, &ldquo;share born abroad&rdquo;
-            and &ldquo;share with foreign background&rdquo; were used instead of
-            &ldquo;newly arrived.&rdquo; In 2016, students without ID numbers
-            were excluded entirely. The current model (model 3) has an adjusted R&sup2;
-            of ~53% for merit values, meaning 53% of variance between schools is
-            explained by these background factors alone.
+            Modellen har utvecklats &ouml;ver tid. F&ouml;re 2013 anv&auml;ndes
+            &ldquo;andel f&ouml;dda utomlands&rdquo; och &ldquo;andel med
+            utl&auml;ndsk bakgrund&rdquo; ist&auml;llet f&ouml;r
+            &ldquo;nyinvandrade&rdquo;. 2016 exkluderades elever utan
+            personnummer helt. Den nuvarande modellen (modell 3) har ett
+            justerat R&sup2; p&aring; ~53% f&ouml;r meritv&auml;rden, vilket
+            inneb&auml;r att 53% av variansen mellan skolor f&ouml;rklaras av
+            enbart dessa bakgrundsfaktorer.
           </p>
         </CardContent>
       </Card>
 
-      {/* Key metrics explained */}
+      {/* Viktiga mått förklarade */}
       <Card>
         <CardHeader>
-          <CardTitle>Key Metrics Explained</CardTitle>
+          <CardTitle>Viktiga m&aring;tt f&ouml;rklarade</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6 text-[15px] leading-relaxed">
           <div>
             <h3 className="font-semibold text-base mb-1">
-              Merit Value (Meritv&auml;rde)
+              Meritv&auml;rde
             </h3>
             <p>
-              The average grade point total for students completing year 9
-              (grundskolan). Calculated from the student&apos;s 16 or 17 best
-              subjects. The theoretical maximum is 340 points (17 subjects
-              &times; A=20 points).
+              Det genomsnittliga betygspoengen f&ouml;r elever som avslutar
+              &aring;rskurs 9 (grundskolan). Ber&auml;knas utifr&aring;n
+              elevens 16 eller 17 b&auml;sta &auml;mnen. Det teoretiska
+              maxv&auml;rdet &auml;r 340 po&auml;ng (17 &auml;mnen &times;
+              A=20 po&auml;ng).
             </p>
           </div>
 
@@ -142,12 +148,14 @@ export default function AboutPage() {
 
           <div>
             <h3 className="font-semibold text-base mb-1">
-              Predicted Value (Modellber&auml;knat v&auml;rde)
+              Modellber&auml;knat v&auml;rde
             </h3>
             <p>
-              What the SALSA regression model predicts a school&apos;s average
-              merit value <em>should</em> be, given its student demographics.
-              Schools with similar backgrounds get similar predicted values.
+              Vad SALSA-regressionsmodellen f&ouml;ruts&auml;ger att en skolas
+              genomsnittliga meritv&auml;rde <em>b&ouml;r</em> vara, givet
+              elevernas demografiska f&ouml;ruts&auml;ttningar. Skolor med
+              liknande bakgrund f&aring;r liknande modellber&auml;knade
+              v&auml;rden.
             </p>
           </div>
 
@@ -155,46 +163,47 @@ export default function AboutPage() {
 
           <div>
             <h3 className="font-semibold text-base mb-1">
-              Residual (Residual = Actual &minus; Predicted)
+              Residual (Residual = Faktiskt &minus; F&ouml;rv&auml;ntat)
             </h3>
             <p>
-              The difference between the school&apos;s actual result and what the
-              model predicted. This is the most important metric in SALSA:
+              Skillnaden mellan skolans faktiska resultat och vad modellen
+              f&ouml;rutsa. Detta &auml;r det viktigaste m&aring;ttet i SALSA:
             </p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
               <li>
                 <span className="text-green-600 font-medium">
-                  Positive residual
+                  Positiv residual
                 </span>{" "}
-                &mdash; the school performed <em>better</em> than predicted.
-                Given its student demographics, it achieved higher results than
-                the national average of schools with similar backgrounds.
+                &mdash; skolan presterade <em>b&auml;ttre</em> &auml;n
+                f&ouml;rv&auml;ntat. Givet elevernas bakgrund uppn&aring;dde
+                skolan h&ouml;gre resultat &auml;n riksgenomsnittet f&ouml;r
+                skolor med liknande f&ouml;ruts&auml;ttningar.
               </li>
               <li>
                 <span className="text-red-600 font-medium">
-                  Negative residual
+                  Negativ residual
                 </span>{" "}
-                &mdash; the school performed <em>worse</em> than predicted. Its
-                results were below what would be expected given its student
-                population.
+                &mdash; skolan presterade <em>s&auml;mre</em> &auml;n
+                f&ouml;rv&auml;ntat. Resultaten l&aring;g under vad som kunde
+                f&ouml;rv&auml;ntas givet elevernas bakgrund.
               </li>
               <li>
-                <strong>Zero residual</strong> &mdash; the school performed
-                exactly as predicted. Its results match the national average for
-                schools with the same background factors.
+                <strong>Noll i residual</strong> &mdash; skolan presterade
+                exakt som f&ouml;rv&auml;ntat. Resultaten matchar
+                riksgenomsnittet f&ouml;r skolor med samma bakgrundsfaktorer.
               </li>
             </ul>
             {dist && (
               <p className="mt-3 text-sm text-muted-foreground">
-                In {stats?.max_year},{" "}
+                &Aring;r {stats?.max_year} presterade{" "}
                 <span className="text-green-600 font-medium">
-                  {dist.positive_residual_count} schools
+                  {dist.positive_residual_count} skolor
                 </span>{" "}
-                outperformed their prediction and{" "}
+                b&auml;ttre &auml;n f&ouml;rv&auml;ntat och{" "}
                 <span className="text-red-600 font-medium">
-                  {dist.negative_residual_count} schools
+                  {dist.negative_residual_count} skolor
                 </span>{" "}
-                underperformed.
+                s&auml;mre &auml;n f&ouml;rv&auml;ntat.
               </p>
             )}
           </div>
@@ -203,67 +212,71 @@ export default function AboutPage() {
 
           <div>
             <h3 className="font-semibold text-base mb-1">
-              Gymnasiet Eligibility (Beh&ouml;righet)
+              Gymnasiebeh&ouml;righet
             </h3>
             <p>
-              The percentage of students who achieved passing grades in enough
-              subjects to be eligible for upper secondary school (gymnasiet).
-              SALSA provides both actual and predicted eligibility rates, and a
-              residual comparing them.
+              Andelen elever som uppn&aring;tt godk&auml;nda betyg i
+              tillr&auml;ckligt m&aring;nga &auml;mnen f&ouml;r att vara
+              beh&ouml;riga till gymnasiet. SALSA visar b&aring;de faktisk och
+              f&ouml;rv&auml;ntad beh&ouml;righetsgrad, samt en residual som
+              j&auml;mf&ouml;r dem.
             </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* How to interpret */}
+      {/* Hur man tolkar datan */}
       <Card>
         <CardHeader>
-          <CardTitle>How to Interpret the Data</CardTitle>
+          <CardTitle>Hur man tolkar datan</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-[15px] leading-relaxed">
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <p className="font-medium text-amber-800 mb-2">
-              Important caveats
+              Viktiga f&ouml;rbeh&aring;ll
             </p>
             <ul className="list-disc pl-5 space-y-2 text-amber-900 text-sm">
               <li>
-                SALSA measures <em>correlation</em>, not causation. A positive
-                residual does not prove a school is &ldquo;better&rdquo; &mdash;
-                many factors outside the model (teacher quality, school culture,
-                student motivation, cognitive ability) affect results.
+                SALSA m&auml;ter <em>korrelation</em>, inte orsakssamband. En
+                positiv residual bevisar inte att en skola &auml;r
+                &ldquo;b&auml;ttre&rdquo; &mdash; m&aring;nga faktorer utanf&ouml;r
+                modellen (l&auml;rarkvalitet, skolkultur, elevmotivation,
+                kognitiv f&ouml;rm&aring;ga) p&aring;verkar resultaten.
               </li>
               <li>
-                Year-to-year comparisons should be made cautiously. A
-                school&apos;s residual can change because the <em>national</em>{" "}
-                average shifted, not because the school itself changed.
+                J&auml;mf&ouml;relser mellan &aring;r b&ouml;r g&ouml;ras med
+                f&ouml;rsiktighet. En skolas residual kan f&ouml;r&auml;ndras
+                f&ouml;r att det <em>nationella</em> genomsnittet f&ouml;rskjutits,
+                inte f&ouml;r att skolan sj&auml;lv f&ouml;r&auml;ndrats.
               </li>
               <li>
-                Schools with very few students (under 15) may have suppressed
-                data to protect individual privacy. These are marked with
-                &ldquo;..&rdquo; in the original source.
+                Skolor med mycket f&aring; elever (under 15) kan ha dold data
+                f&ouml;r att skydda enskilda elevers integritet. Dessa markeras
+                med &ldquo;..&rdquo; i originalk&auml;llan.
               </li>
               <li>
-                The 2016 SALSA population differs from other years: students
-                without a personal identity number were excluded that year. This
-                can make cross-year comparisons for 2016 less reliable.
+                SALSA-populationen 2016 skiljer sig fr&aring;n &ouml;vriga
+                &aring;r: elever utan personnummer exkluderades det &aring;ret.
+                Detta kan g&ouml;ra j&auml;mf&ouml;relser &ouml;ver &aring;r
+                mindre tillf&ouml;rlitliga f&ouml;r 2016.
               </li>
             </ul>
           </div>
           <p>
-            For a meaningful assessment of a school, combine SALSA data with
-            other information: Skolverket&apos;s school inspections
-            (Skolinspektionen), student and parent surveys, and local knowledge
-            about the school environment.
+            F&ouml;r en meningsfull bed&ouml;mning av en skola, kombinera
+            SALSA-data med annan information: Skolinspektionens granskningar,
+            elev- och f&ouml;r&auml;ldraenk&auml;ter, samt lokal k&auml;nnedom
+            om skolmilj&ouml;n.
           </p>
         </CardContent>
       </Card>
 
-      {/* Model evolution */}
+      {/* Modellens utveckling */}
       <Card>
         <CardHeader>
-          <CardTitle>SALSA Model Evolution</CardTitle>
+          <CardTitle>SALSA-modellens utveckling</CardTitle>
           <CardDescription>
-            The background factors have changed over time
+            Bakgrundsfaktorerna har f&ouml;r&auml;ndrats &ouml;ver tid
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -271,36 +284,36 @@ export default function AboutPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-muted-foreground">
-                  <th scope="col" className="text-left py-2 px-3">Model</th>
-                  <th scope="col" className="text-left py-2 px-3">Years</th>
-                  <th scope="col" className="text-left py-2 px-3">Background Factors</th>
-                  <th scope="col" className="text-left py-2 px-3">Key Change</th>
+                  <th scope="col" className="text-left py-2 px-3">Modell</th>
+                  <th scope="col" className="text-left py-2 px-3">&Aring;r</th>
+                  <th scope="col" className="text-left py-2 px-3">Bakgrundsfaktorer</th>
+                  <th scope="col" className="text-left py-2 px-3">Viktig f&ouml;r&auml;ndring</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b">
-                  <td className="py-2 px-3 font-medium">Model 1</td>
+                  <td className="py-2 px-3 font-medium">Modell 1</td>
                   <td className="py-2 px-3">1998&ndash;2012</td>
-                  <td className="py-2 px-3">Parents&apos; ed., born abroad, foreign background, boys %</td>
-                  <td className="py-2 px-3 text-muted-foreground">Original model</td>
+                  <td className="py-2 px-3">F&ouml;r&auml;ldrars utb., f&ouml;dda utomlands, utl. bakgrund, andel pojkar</td>
+                  <td className="py-2 px-3 text-muted-foreground">Ursprunglig modell</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-2 px-3 font-medium">Model 2</td>
+                  <td className="py-2 px-3 font-medium">Modell 2</td>
                   <td className="py-2 px-3">2013&ndash;2014</td>
-                  <td className="py-2 px-3">Parents&apos; ed., newly arrived, boys %</td>
-                  <td className="py-2 px-3 text-muted-foreground">&ldquo;Newly arrived&rdquo; replaces foreign background</td>
+                  <td className="py-2 px-3">F&ouml;r&auml;ldrars utb., nyinvandrade, andel pojkar</td>
+                  <td className="py-2 px-3 text-muted-foreground">&ldquo;Nyinvandrade&rdquo; ers&auml;tter utl&auml;ndsk bakgrund</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-2 px-3 font-medium">Model 3</td>
-                  <td className="py-2 px-3">2015, 2017&ndash;present</td>
-                  <td className="py-2 px-3">Parents&apos; ed., newly arrived (incl. unknown bg), boys %</td>
-                  <td className="py-2 px-3 text-muted-foreground">Students with unknown background included as newly arrived</td>
+                  <td className="py-2 px-3 font-medium">Modell 3</td>
+                  <td className="py-2 px-3">2015, 2017&ndash;idag</td>
+                  <td className="py-2 px-3">F&ouml;r&auml;ldrars utb., nyinvandrade (inkl. ok&auml;nd bakgr.), andel pojkar</td>
+                  <td className="py-2 px-3 text-muted-foreground">Elever med ok&auml;nd bakgrund r&auml;knas som nyinvandrade</td>
                 </tr>
                 <tr>
-                  <td className="py-2 px-3 font-medium">Model 4</td>
-                  <td className="py-2 px-3">2016 only</td>
-                  <td className="py-2 px-3">Parents&apos; ed., newly arrived, boys %</td>
-                  <td className="py-2 px-3 text-muted-foreground">Students without ID number excluded entirely (refugee wave)</td>
+                  <td className="py-2 px-3 font-medium">Modell 4</td>
+                  <td className="py-2 px-3">Enbart 2016</td>
+                  <td className="py-2 px-3">F&ouml;r&auml;ldrars utb., nyinvandrade, andel pojkar</td>
+                  <td className="py-2 px-3 text-muted-foreground">Elever utan personnummer exkluderade (flyktingv&aring;gen)</td>
                 </tr>
               </tbody>
             </table>
@@ -308,12 +321,12 @@ export default function AboutPage() {
         </CardContent>
       </Card>
 
-      {/* Data captured */}
+      {/* Lagrade datapunkter */}
       <Card>
         <CardHeader>
-          <CardTitle>Data Points Captured</CardTitle>
+          <CardTitle>Lagrade datapunkter</CardTitle>
           <CardDescription>
-            Every field from the SIRIS SALSA table is stored
+            Varje f&auml;lt fr&aring;n SIRIS SALSA-tabellen lagras
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -321,105 +334,111 @@ export default function AboutPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-muted-foreground">
-                  <th scope="col" className="text-left py-2 px-3">Field</th>
-                  <th scope="col" className="text-left py-2 px-3">Swedish Name</th>
-                  <th scope="col" className="text-left py-2 px-3">Available</th>
+                  <th scope="col" className="text-left py-2 px-3">F&auml;lt</th>
+                  <th scope="col" className="text-left py-2 px-3">Svenskt namn</th>
+                  <th scope="col" className="text-left py-2 px-3">Tillg&auml;ngligt</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Year</td><td className="py-1.5 px-3">Verksamhets&aring;r</td><td className="py-1.5 px-3">1998&ndash;2025</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Municipality</td><td className="py-1.5 px-3">Kommun</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">School name</td><td className="py-1.5 px-3">Skolenhet</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Owner type</td><td className="py-1.5 px-3">Huvudman (Kom./Ensk.)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Background Factors</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Parents&apos; education</td><td className="py-1.5 px-3">F&ouml;r&auml;ldrarnas utbildningsniv&aring;</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Newly arrived %</td><td className="py-1.5 px-3">Andel nyinvandrade</td><td className="py-1.5 px-3">2013&ndash;2025</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Born abroad %</td><td className="py-1.5 px-3">Andel f&ouml;dda utomlands</td><td className="py-1.5 px-3">1998&ndash;2012</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Foreign background %</td><td className="py-1.5 px-3">Andel utl&auml;ndsk bakgrund</td><td className="py-1.5 px-3">1998&ndash;2012</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Boys %</td><td className="py-1.5 px-3">Andel pojkar</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Eligibility (godkända betyg i alla ämnen)</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Actual eligible %</td><td className="py-1.5 px-3">Faktiskt v&auml;rde (F)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Predicted eligible %</td><td className="py-1.5 px-3">Modellber&auml;knat v&auml;rde (B)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Residual eligible</td><td className="py-1.5 px-3">Residual (R=F&minus;B)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Merit Value (genomsnittligt meritv&auml;rde)</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Actual merit</td><td className="py-1.5 px-3">Faktiskt v&auml;rde (F)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Predicted merit</td><td className="py-1.5 px-3">Modellber&auml;knat v&auml;rde (B)</td><td className="py-1.5 px-3">All years</td></tr>
-                <tr><td className="py-1.5 px-3 font-medium">Residual merit</td><td className="py-1.5 px-3">Residual (R=F&minus;B)</td><td className="py-1.5 px-3">All years</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">&Aring;r</td><td className="py-1.5 px-3">Verksamhets&aring;r</td><td className="py-1.5 px-3">1998&ndash;2025</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Kommun</td><td className="py-1.5 px-3">Kommun</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Skolnamn</td><td className="py-1.5 px-3">Skolenhet</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Huvudmannatyp</td><td className="py-1.5 px-3">Huvudman (Kom./Ensk.)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Bakgrundsfaktorer</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">F&ouml;r&auml;ldrars utbildning</td><td className="py-1.5 px-3">F&ouml;r&auml;ldrarnas utbildningsniv&aring;</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Andel nyinvandrade</td><td className="py-1.5 px-3">Andel nyinvandrade</td><td className="py-1.5 px-3">2013&ndash;2025</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Andel f&ouml;dda utomlands</td><td className="py-1.5 px-3">Andel f&ouml;dda utomlands</td><td className="py-1.5 px-3">1998&ndash;2012</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Andel utl&auml;ndsk bakgrund</td><td className="py-1.5 px-3">Andel utl&auml;ndsk bakgrund</td><td className="py-1.5 px-3">1998&ndash;2012</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Andel pojkar</td><td className="py-1.5 px-3">Andel pojkar</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Beh&ouml;righet (godk&auml;nda betyg i alla &auml;mnen)</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Faktisk beh&ouml;righet %</td><td className="py-1.5 px-3">Faktiskt v&auml;rde (F)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">F&ouml;rv&auml;ntad beh&ouml;righet %</td><td className="py-1.5 px-3">Modellber&auml;knat v&auml;rde (B)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Residual beh&ouml;righet</td><td className="py-1.5 px-3">Residual (R=F&minus;B)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b bg-muted/30"><td colSpan={3} className="py-1.5 px-3 font-semibold text-muted-foreground">Meritv&auml;rde (genomsnittligt meritv&auml;rde)</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">Faktiskt meritv&auml;rde</td><td className="py-1.5 px-3">Faktiskt v&auml;rde (F)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr className="border-b"><td className="py-1.5 px-3 font-medium">F&ouml;rv&auml;ntat meritv&auml;rde</td><td className="py-1.5 px-3">Modellber&auml;knat v&auml;rde (B)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
+                <tr><td className="py-1.5 px-3 font-medium">Residual meritv&auml;rde</td><td className="py-1.5 px-3">Residual (R=F&minus;B)</td><td className="py-1.5 px-3">Alla &aring;r</td></tr>
               </tbody>
             </table>
           </div>
           <p className="text-sm text-muted-foreground mt-4">
-            Note: &ldquo;Born abroad&rdquo; and &ldquo;Foreign background&rdquo; were replaced by
-            &ldquo;Newly arrived&rdquo; in 2013 when the SALSA model was updated.
-            Both sets of fields are preserved in this explorer for historical analysis.
-            The merit value calculation changed in 2015 from max 16 to max 17 subjects.
+            Obs: &ldquo;F&ouml;dda utomlands&rdquo; och &ldquo;Utl&auml;ndsk
+            bakgrund&rdquo; ersattes av &ldquo;Nyinvandrade&rdquo; 2013 n&auml;r
+            SALSA-modellen uppdaterades. B&aring;da upps&auml;ttningarna av
+            f&auml;lt bevaras i denna utforskare f&ouml;r historisk analys.
+            Meritv&auml;rdesber&auml;kningen &auml;ndrades 2015 fr&aring;n max
+            16 till max 17 &auml;mnen.
           </p>
         </CardContent>
       </Card>
 
-      {/* Features of this explorer */}
+      {/* Funktioner i utforskaren */}
       <Card>
         <CardHeader>
-          <CardTitle>Explorer Features</CardTitle>
+          <CardTitle>Funktioner</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-[15px] leading-relaxed">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="border rounded-lg p-4">
               <h4 className="font-semibold mb-1">Dashboard</h4>
               <p className="text-sm text-muted-foreground">
-                National overview with key insights, trend charts, top/bottom
-                performers, and municipality rankings for the latest year.
+                Nationell &ouml;versikt med viktiga insikter, trenddiagram,
+                b&auml;sta/s&auml;msta skolor och kommunrankning f&ouml;r
+                senaste &aring;ret.
               </p>
             </div>
             <div className="border rounded-lg p-4">
-              <h4 className="font-semibold mb-1">Municipality Browser</h4>
+              <h4 className="font-semibold mb-1">Kommunbl&auml;ddrare</h4>
               <p className="text-sm text-muted-foreground">
-                Browse all municipalities and their schools. Each municipality
-                page shows trend charts and a sortable school table with merit
-                values and residuals.
+                Bl&auml;ddra bland alla kommuner och deras skolor. Varje
+                kommunsida visar trenddiagram och en sorterbar skoltabell med
+                meritv&auml;rden och residualer.
               </p>
             </div>
             <div className="border rounded-lg p-4">
-              <h4 className="font-semibold mb-1">School Detail</h4>
+              <h4 className="font-semibold mb-1">Skoldetaljer</h4>
               <p className="text-sm text-muted-foreground">
-                Deep dive into any school: merit trend, residual history,
-                eligibility rates, demographic breakdown, and the full data
-                table across all years.
+                F&ouml;rdjupa dig i vilken skola som helst: merittrend,
+                residualhistorik, beh&ouml;righetsgrad, demografisk
+                f&ouml;rdelning och fullst&auml;ndig datatabell &ouml;ver alla
+                &aring;r.
               </p>
             </div>
             <div className="border rounded-lg p-4">
-              <h4 className="font-semibold mb-1">Search</h4>
+              <h4 className="font-semibold mb-1">S&ouml;k</h4>
               <p className="text-sm text-muted-foreground">
-                Find any school by name or municipality. Results show latest
-                merit values and residuals at a glance.
+                Hitta vilken skola som helst via namn eller kommun. Resultaten
+                visar senaste meritv&auml;rden och residualer direkt.
               </p>
             </div>
             <div className="border rounded-lg p-4">
-              <h4 className="font-semibold mb-1">Compare</h4>
+              <h4 className="font-semibold mb-1">J&auml;mf&ouml;r</h4>
               <p className="text-sm text-muted-foreground">
-                Search and select up to 5 schools for side-by-side comparison
-                with overlay charts and detailed data tables.
+                S&ouml;k och v&auml;lj upp till 5 skolor f&ouml;r
+                j&auml;mf&ouml;relse sida vid sida med &ouml;verlappande
+                diagram och detaljerade datatabeller.
               </p>
             </div>
             <div className="border rounded-lg p-4">
-              <h4 className="font-semibold mb-1">National Trends</h4>
+              <h4 className="font-semibold mb-1">Nationella trender</h4>
               <p className="text-sm text-muted-foreground">
-                See how national averages for merit values, eligibility rates,
-                and the number of schools have evolved from 1998 to the present.
+                Se hur nationella genomsnitt f&ouml;r meritv&auml;rden,
+                beh&ouml;righetsgrader och antalet skolor har utvecklats
+                fr&aring;n 1998 till idag.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Data source & technical */}
+      {/* Datakälla & metod */}
       <Card>
         <CardHeader>
-          <CardTitle>Data Source &amp; Methodology</CardTitle>
+          <CardTitle>Datak&auml;lla &amp; metod</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-[15px] leading-relaxed">
           <p>
-            All data is sourced from{" "}
+            All data h&auml;mtas fr&aring;n{" "}
             <a
               href="https://siris.skolverket.se/siris/f?p=SIRIS:164:0::NO:::"
               className="text-primary underline"
@@ -429,70 +448,78 @@ export default function AboutPage() {
               SIRIS (Skolverkets Internetbaserade Resultat- och
               kvalitetsInformationsSystem)
             </a>
-            , which is Skolverket&apos;s official public database for school
-            statistics.
+            , som &auml;r Skolverkets officiella publika databas f&ouml;r
+            skolstatistik.
           </p>
           <p>
-            The data was collected programmatically using a custom scraper that
-            navigates the SIRIS web application, selects each municipality and
-            its schools, and extracts the SALSA table data. Rate limiting and
-            polite delays were used to avoid overloading the server.
+            Datan samlades in programmatiskt med en specialbyggd skrapa som
+            navigerar SIRIS-webbapplikationen, v&auml;ljer varje kommun och
+            dess skolor, och extraherar SALSA-tabellens data. Hastighetsbegr&auml;nsning
+            och artiga f&ouml;rdr&ouml;jningar anv&auml;ndes f&ouml;r att
+            undvika &ouml;verbelastning av servern.
           </p>
           <p className="text-sm text-muted-foreground">
-            This project is not affiliated with or endorsed by Skolverket. The
-            data is public information made available by Skolverket for
-            transparency and research purposes. This explorer simply makes it
-            easier to browse and analyze.
+            Detta projekt &auml;r inte anslutet till eller godk&auml;nt av
+            Skolverket. Datan &auml;r offentlig information som
+            tillg&auml;ngligg&ouml;rs av Skolverket f&ouml;r transparens och
+            forskning. Denna utforskare g&ouml;r det helt enkelt l&auml;ttare
+            att bl&auml;ddra och analysera.
           </p>
         </CardContent>
       </Card>
 
-      {/* Security */}
+      {/* Säkerhet */}
       <Card>
         <CardHeader>
-          <CardTitle>Security</CardTitle>
-          <CardDescription>OWASP Top 10 compliant</CardDescription>
+          <CardTitle>S&auml;kerhet</CardTitle>
+          <CardDescription>OWASP Top 10-kompatibel</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-[15px] leading-relaxed">
           <ul className="list-disc pl-6 space-y-1.5 text-sm">
             <li>
-              <strong>Injection prevention</strong> &mdash; all SQL queries use
-              parameterized statements, LIKE metacharacters are escaped, URL
-              parameters are validated against strict regex patterns
+              <strong>Injektionsskydd</strong> &mdash; alla SQL-fr&aring;gor
+              anv&auml;nder parametriserade satser, LIKE-metatecken escapas,
+              URL-parametrar valideras mot strikta regex-m&ouml;nster
             </li>
             <li>
-              <strong>Security headers</strong> &mdash; Content-Security-Policy,
-              X-Frame-Options DENY, X-Content-Type-Options nosniff,
-              Referrer-Policy, Permissions-Policy
+              <strong>S&auml;kerhetsrubriker</strong> &mdash;
+              Content-Security-Policy, X-Frame-Options DENY,
+              X-Content-Type-Options nosniff, Referrer-Policy,
+              Permissions-Policy
             </li>
             <li>
-              <strong>Rate limiting</strong> &mdash; API endpoints enforce 60
-              requests per minute per IP to prevent abuse
+              <strong>Hastighetsbegr&auml;nsning</strong> &mdash;
+              API-&auml;ndpunkter till&aring;ter max 60 f&ouml;rfr&aring;gningar
+              per minut per IP f&ouml;r att f&ouml;rhindra missbruk
             </li>
             <li>
-              <strong>Read-only database</strong> &mdash; SQLite opened in
-              read-only mode; even a successful injection cannot modify data
+              <strong>Skrivskyddad databas</strong> &mdash; SQLite &ouml;ppnas
+              i skrivskyddat l&auml;ge; &auml;ven en lyckad injektion kan inte
+              &auml;ndra data
             </li>
             <li>
-              <strong>No secrets</strong> &mdash; no authentication, no PII, no
-              API keys. All data is publicly sourced government statistics
+              <strong>Inga hemligheter</strong> &mdash; ingen autentisering,
+              ingen persondata, inga API-nycklar. All data &auml;r offentlig
+              statistik fr&aring;n myndigheter
             </li>
             <li>
-              <strong>Structured logging</strong> &mdash; all API requests and
-              errors logged as JSON for monitoring and audit
+              <strong>Strukturerad loggning</strong> &mdash; alla
+              API-f&ouml;rfr&aring;gningar och fel loggas som JSON f&ouml;r
+              &ouml;vervakning och granskning
             </li>
             <li>
-              <strong>Docker hardening</strong> &mdash; non-root user, npm ci
-              for reproducible builds, read-only data volume mount
+              <strong>Docker-h&auml;rdning</strong> &mdash;
+              icke-root-anv&auml;ndare, npm ci f&ouml;r reproducerbara byggen,
+              skrivskyddad datavolym
             </li>
           </ul>
         </CardContent>
       </Card>
 
-      {/* Open source */}
+      {/* Öppen källkod */}
       <Card>
         <CardHeader>
-          <CardTitle>Open Source</CardTitle>
+          <CardTitle>&Ouml;ppen k&auml;llkod</CardTitle>
           <CardDescription>
             <a
               href="https://github.com/ClaudeCarlsson/skolsalsa"
@@ -506,33 +533,33 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-[15px] leading-relaxed">
           <p>
-            This project is fully open source. The codebase includes:
+            Detta projekt &auml;r helt &ouml;ppet. Kodbasen inkluderar:
           </p>
           <ul className="list-disc pl-6 space-y-1 text-sm">
             <li>
-              <strong>Scraper</strong> &mdash; Node.js HTTP client that
-              navigates the SIRIS Oracle APEX application, with rate limiting,
-              retries, checkpointing, and resume support
+              <strong>Skrapa</strong> &mdash; Node.js HTTP-klient som navigerar
+              SIRIS Oracle APEX-applikationen, med hastighetsbegr&auml;nsning,
+              omf&ouml;rs&ouml;k, kontrollpunkter och &aring;terupptagningsst&ouml;d
             </li>
             <li>
-              <strong>Database</strong> &mdash; SQLite with 21,000+ records
-              across 28 years with indexes
+              <strong>Databas</strong> &mdash; SQLite med 21 000+ poster
+              &ouml;ver 28 &aring;r med index
             </li>
             <li>
-              <strong>Explorer</strong> &mdash; Next.js 16 with server
-              components, Recharts visualizations, and shadcn/ui
+              <strong>Utforskare</strong> &mdash; Next.js 16 med
+              serverkomponenter, Recharts-visualiseringar och shadcn/ui
             </li>
             <li>
-              <strong>Tests</strong> &mdash; 100+ integration tests against real
-              APIs and a real server, zero mocking
+              <strong>Tester</strong> &mdash; 100+ integrationstester mot
+              riktiga API:er och en riktig server, utan mockning
             </li>
             <li>
-              <strong>Docker</strong> &mdash; multi-stage builds with health
-              checks
+              <strong>Docker</strong> &mdash; flerstegsbygn med h&auml;lsokontroller
             </li>
             <li>
-              <strong>Linting</strong> &mdash; strict ESLint with security rules
-              (no-eval, no-implied-eval, no-new-func, react/no-danger)
+              <strong>Linting</strong> &mdash; strikt ESLint med
+              s&auml;kerhetsregler (no-eval, no-implied-eval, no-new-func,
+              react/no-danger)
             </li>
           </ul>
         </CardContent>
