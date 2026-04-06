@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import {
   Card,
@@ -10,26 +11,53 @@ import {
 import {
   getDashboardStats,
   getNationalTrends,
-  getTopBottomSchools,
-  getYearDistribution,
+  getTopBottomSchoolsFiltered,
+  getYearDistributionFiltered,
   getMunicipalityRanking,
 } from "@/lib/db";
 import { getLangFromCookie, t, tf } from "@/lib/i18n";
-import { TrendChartClient } from "@/components/trend-chart-client";
-import { ResidualBadge } from "@/components/residual-badge";
+import { DashboardFilter } from "@/components/dashboard-filter";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  const title = t("meta.home.title", lang);
+  const description = t("meta.home.description", lang);
+  return {
+    title,
+    description,
+    openGraph: { title, description, url: "https://skolsalsa.se", type: "website", siteName: "SkolSalsa" },
+  };
+}
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
   const lang = getLangFromCookie(cookieStore.get("lang")?.value);
 
-  let stats, trends, topBottom, distribution, muniRanking;
+  let stats: ReturnType<typeof getDashboardStats> = undefined as unknown as ReturnType<typeof getDashboardStats>;
+  let trends: ReturnType<typeof getNationalTrends> = [];
+  let distributionAll: ReturnType<typeof getYearDistributionFiltered> = null;
+  let distributionMunicipal: ReturnType<typeof getYearDistributionFiltered> = null;
+  let distributionIndependent: ReturnType<typeof getYearDistributionFiltered> = null;
+  let topBottomAll: ReturnType<typeof getTopBottomSchoolsFiltered> = { top: [], bottom: [] };
+  let topBottomMunicipal: ReturnType<typeof getTopBottomSchoolsFiltered> = { top: [], bottom: [] };
+  let topBottomIndependent: ReturnType<typeof getTopBottomSchoolsFiltered> = { top: [], bottom: [] };
+  let muniRankingAll: ReturnType<typeof getMunicipalityRanking> = [];
+  let muniRankingMunicipal: ReturnType<typeof getMunicipalityRanking> = [];
+  let muniRankingIndependent: ReturnType<typeof getMunicipalityRanking> = [];
 
   try {
     stats = getDashboardStats();
     trends = getNationalTrends();
-    topBottom = getTopBottomSchools(stats.max_year, 10);
-    distribution = getYearDistribution(stats.max_year);
-    muniRanking = getMunicipalityRanking(stats.max_year);
+    distributionAll = getYearDistributionFiltered(stats.max_year, "all");
+    distributionMunicipal = getYearDistributionFiltered(stats.max_year, "municipal");
+    distributionIndependent = getYearDistributionFiltered(stats.max_year, "independent");
+    topBottomAll = getTopBottomSchoolsFiltered(stats.max_year, 10, "all");
+    topBottomMunicipal = getTopBottomSchoolsFiltered(stats.max_year, 10, "municipal");
+    topBottomIndependent = getTopBottomSchoolsFiltered(stats.max_year, 10, "independent");
+    muniRankingAll = getMunicipalityRanking(stats.max_year, "all");
+    muniRankingMunicipal = getMunicipalityRanking(stats.max_year, "municipal");
+    muniRankingIndependent = getMunicipalityRanking(stats.max_year, "independent");
   } catch {
     return (
       <div className="mx-auto max-w-7xl px-4 py-12">
@@ -101,185 +129,26 @@ export default async function Dashboard() {
         </Card>
       </div>
 
-      {/* Key insights for latest year */}
-      {distribution && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("dashboard.keyInsights", lang)} ({stats.max_year})</CardTitle>
-            <CardDescription>
-              {tf("dashboard.snapshot", lang, { count: distribution.total_count })}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div>
-                <div className="text-sm text-muted-foreground">{t("dashboard.avgMerit", lang)}</div>
-                <div className="text-xl font-bold tabular-nums">
-                  {distribution.avg_merit}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">
-                  {t("dashboard.meritRange", lang)}
-                </div>
-                <div className="text-xl font-bold tabular-nums">
-                  {distribution.min_merit}&ndash;{distribution.max_merit}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">
-                  {t("dashboard.abovePrediction", lang)}
-                </div>
-                <div className="text-xl font-bold tabular-nums text-green-600">
-                  {distribution.positive_residual_count} {t("dashboard.schoolsWord", lang)}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm text-muted-foreground">
-                  {t("dashboard.belowPrediction", lang)}
-                </div>
-                <div className="text-xl font-bold tabular-nums text-red-600">
-                  {distribution.negative_residual_count} {t("dashboard.schoolsWord", lang)}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* National trend chart */}
-      {trends.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("dashboard.nationalTrends", lang)}</CardTitle>
-            <CardDescription>
-              {t("dashboard.nationalTrendsDesc", lang)}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <TrendChartClient data={trends} lang={lang} />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Top and bottom schools side by side */}
-      {topBottom && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg text-green-600">
-                {t("dashboard.topOutperformers", lang)} ({stats.max_year})
-              </CardTitle>
-              <CardDescription>
-                {t("dashboard.topOutperformersDesc", lang)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {topBottom.top.map((s, i) => (
-                  <div key={s.school_code} className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground w-5 text-right">{i + 1}.</span>
-                    <Link
-                      href={`/school/${s.school_code}`}
-                      className="text-primary hover:underline flex-1 truncate"
-                    >
-                      {s.school_name}
-                    </Link>
-                    <span className="text-muted-foreground text-xs truncate max-w-24">
-                      {s.municipality_name}
-                    </span>
-                    <ResidualBadge value={s.residual_merit} />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg text-red-600">
-                {t("dashboard.bottomUnderperformers", lang)} ({stats.max_year})
-              </CardTitle>
-              <CardDescription>
-                {t("dashboard.bottomUnderperformersDesc", lang)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {topBottom.bottom.map((s, i) => (
-                  <div key={s.school_code} className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground w-5 text-right">{i + 1}.</span>
-                    <Link
-                      href={`/school/${s.school_code}`}
-                      className="text-primary hover:underline flex-1 truncate"
-                    >
-                      {s.school_name}
-                    </Link>
-                    <span className="text-muted-foreground text-xs truncate max-w-24">
-                      {s.municipality_name}
-                    </span>
-                    <ResidualBadge value={s.residual_merit} />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Municipality ranking */}
-      {muniRanking && muniRanking.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("dashboard.muniRanking", lang)} ({stats.max_year})</CardTitle>
-            <CardDescription>
-              {t("dashboard.muniRankingDesc", lang)}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b text-muted-foreground">
-                    <th scope="col" className="text-left py-2 px-3">#</th>
-                    <th scope="col" className="text-left py-2 px-3">{t("common.municipality", lang)}</th>
-                    <th scope="col" className="text-right py-2 px-3">{t("common.schools", lang)}</th>
-                    <th scope="col" className="text-right py-2 px-3">{t("common.avgMerit", lang)}</th>
-                    <th scope="col" className="text-right py-2 px-3">{t("common.avgResidual", lang)}</th>
-                    <th scope="col" className="text-right py-2 px-3">{t("common.eligible", lang)}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {muniRanking.slice(0, 20).map((m, i) => (
-                    <tr key={m.code} className="border-b last:border-0 hover:bg-accent/50">
-                      <td className="py-1.5 px-3 text-muted-foreground">{i + 1}</td>
-                      <td className="py-1.5 px-3">
-                        <Link
-                          href={`/municipality/${m.code}`}
-                          className="text-primary hover:underline"
-                        >
-                          {m.name}
-                        </Link>
-                      </td>
-                      <td className="py-1.5 px-3 text-right tabular-nums text-muted-foreground">
-                        {m.school_count}
-                      </td>
-                      <td className="py-1.5 px-3 text-right tabular-nums font-medium">
-                        {m.avg_merit}
-                      </td>
-                      <td className="py-1.5 px-3 text-right">
-                        <ResidualBadge value={m.avg_residual} />
-                      </td>
-                      <td className="py-1.5 px-3 text-right tabular-nums">
-                        {m.avg_eligible}%
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <DashboardFilter
+        lang={lang}
+        year={stats.max_year}
+        trends={trends}
+        distributions={{
+          all: distributionAll ?? null,
+          municipal: distributionMunicipal ?? null,
+          independent: distributionIndependent ?? null,
+        }}
+        topBottoms={{
+          all: topBottomAll ?? { top: [], bottom: [] },
+          municipal: topBottomMunicipal ?? { top: [], bottom: [] },
+          independent: topBottomIndependent ?? { top: [], bottom: [] },
+        }}
+        muniRankings={{
+          all: muniRankingAll ?? [],
+          municipal: muniRankingMunicipal ?? [],
+          independent: muniRankingIndependent ?? [],
+        }}
+      />
 
       {/* Quick links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

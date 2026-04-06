@@ -1,8 +1,21 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Card, CardContent } from "@/components/ui/card";
 import { getMunicipalities } from "@/lib/db";
 import { getLangFromCookie, t } from "@/lib/i18n";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  const title = t("meta.munis.title", lang);
+  const description = t("meta.munis.description", lang);
+  return {
+    title,
+    description,
+    openGraph: { title, description, url: "https://skolsalsa.se/municipalities", type: "website", siteName: "SkolSalsa" },
+  };
+}
 
 export default async function MunicipalitiesPage() {
   const cookieStore = await cookies();
@@ -45,7 +58,7 @@ export default async function MunicipalitiesPage() {
               <CardContent className="py-3 px-4">
                 <div className="font-medium text-sm">{m.name}</div>
                 <div className="text-xs text-muted-foreground">
-                  {m.school_count} {t("muni.skolor", lang)}
+                  {m.school_count} {m.school_count === 1 ? t("muni.skola", lang) : t("muni.skolor", lang)}
                 </div>
               </CardContent>
             </Card>

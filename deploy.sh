@@ -42,9 +42,9 @@ fi
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Change detected: $LOCAL_HEAD -> $REMOTE_HEAD" >> "$LOG_FILE"
 
-# Pull changes
-git pull origin main >> "$LOG_FILE" 2>&1 || {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: git pull failed" >> "$LOG_FILE"
+# Reset to remote (avoids merge conflicts on force-pushed branches)
+git reset --hard origin/main >> "$LOG_FILE" 2>&1 || {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: git reset failed" >> "$LOG_FILE"
   exit 1
 }
 

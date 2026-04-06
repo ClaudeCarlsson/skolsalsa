@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import {
   Card,
@@ -9,6 +10,18 @@ import {
 import { getNationalTrends } from "@/lib/db";
 import { TrendsCharts } from "./trends-charts";
 import { getLangFromCookie, t } from "@/lib/i18n";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  const title = t("meta.trends.title", lang);
+  const description = t("meta.trends.description", lang);
+  return {
+    title,
+    description,
+    openGraph: { title, description, url: "https://skolsalsa.se/trends", type: "website", siteName: "SkolSalsa" },
+  };
+}
 
 export default async function TrendsPage() {
   const cookieStore = await cookies();

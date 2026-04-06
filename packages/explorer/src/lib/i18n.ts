@@ -160,6 +160,104 @@ const translations = {
   "chart.predictedPct": { sv: "Modellberäknat %", en: "Predicted %" },
   "chart.meritAxis": { sv: "Meritvärde", en: "Merit" },
   "chart.eligibleAxis": { sv: "Behörighet %", en: "Eligible %" },
+
+  // Navigation (new)
+  "nav.favorites": { sv: "Mina skolor", en: "My Schools" },
+
+  // Per-page meta tags
+  "meta.home.title": {
+    sv: "SkolSalsa — Utforska svenska skolors resultat 1998–2025",
+    en: "SkolSalsa — Explore Swedish school performance 1998–2025",
+  },
+  "meta.home.description": {
+    sv: "Jämför svenska skolors resultat med SALSA-modellen. Meritvärden, residualer och trender för över 1 500 skolor.",
+    en: "Compare Swedish school results with the SALSA model. Merit values, residuals and trends for over 1,500 schools.",
+  },
+  "meta.school.title": {
+    sv: "{name}, {municipality} — Meritvärde, residual och trender | SkolSalsa",
+    en: "{name}, {municipality} — Merit value, residual and trends | SkolSalsa",
+  },
+  "meta.school.description": {
+    sv: "Se hur {name} i {municipality} presterar jämfört med förväntat värde. Meritvärde: {merit}, residual: {residual}. SALSA-data 1998–2025.",
+    en: "See how {name} in {municipality} performs vs prediction. Merit: {merit}, residual: {residual}. SALSA data 1998–2025.",
+  },
+  "meta.muni.title": {
+    sv: "Skolor i {name} — Resultat och jämförelser | SkolSalsa",
+    en: "Schools in {name} — Results and comparisons | SkolSalsa",
+  },
+  "meta.muni.description": {
+    sv: "Utforska skolresultat i {name}. Meritvärden, residualer och gymnasiebehörighet för {count} skolor.",
+    en: "Explore school results in {name}. Merit values, residuals and gymnasiet eligibility for {count} schools.",
+  },
+  "meta.munis.title": { sv: "Alla kommuner — SkolSalsa", en: "All municipalities — SkolSalsa" },
+  "meta.munis.description": {
+    sv: "Bläddra bland alla svenska kommuner och deras skolresultat.",
+    en: "Browse all Swedish municipalities and their school results.",
+  },
+  "meta.search.title": { sv: "Sök skolor — SkolSalsa", en: "Search schools — SkolSalsa" },
+  "meta.search.description": {
+    sv: "Sök bland svenska skolor efter namn eller kommun.",
+    en: "Search Swedish schools by name or municipality.",
+  },
+  "meta.compare.title": { sv: "Jämför skolor — SkolSalsa", en: "Compare schools — SkolSalsa" },
+  "meta.compare.description": {
+    sv: "Jämför upp till 5 svenska skolor sida vid sida.",
+    en: "Compare up to 5 Swedish schools side by side.",
+  },
+  "meta.trends.title": { sv: "Nationella trender — SkolSalsa", en: "National trends — SkolSalsa" },
+  "meta.trends.description": {
+    sv: "Nationella trender för meritvärden och gymnasiebehörighet 1998–2025.",
+    en: "National trends for merit values and gymnasiet eligibility 1998–2025.",
+  },
+  "meta.about.title": { sv: "Om SALSA-modellen — SkolSalsa", en: "About the SALSA model — SkolSalsa" },
+  "meta.about.description": {
+    sv: "Lär dig om SALSA-modellen, datakällor och metodik.",
+    en: "Learn about the SALSA model, data sources and methodology.",
+  },
+  "meta.favorites.title": { sv: "Mina skolor — SkolSalsa", en: "My Schools — SkolSalsa" },
+  "meta.favorites.description": { sv: "Dina sparade skolor.", en: "Your saved schools." },
+
+  // Residual explanation on school page
+  "school.residualExplainPositive": {
+    sv: "Den här skolan presterade {value} poäng bättre än förväntat givet elevsammansättningen.",
+    en: "This school performed {value} points above prediction given its student demographics.",
+  },
+  "school.residualExplainNegative": {
+    sv: "Den här skolan presterade {value} poäng sämre än förväntat givet elevsammansättningen.",
+    en: "This school performed {value} points below prediction given its student demographics.",
+  },
+  "school.residualExplainZero": {
+    sv: "Den här skolan presterade exakt som förväntat givet elevsammansättningen.",
+    en: "This school performed exactly as predicted given its student demographics.",
+  },
+
+  // Dashboard filter
+  "filter.all": { sv: "Alla", en: "All" },
+  "filter.municipal": { sv: "Kommunala", en: "Municipal" },
+  "filter.independent": { sv: "Enskilda", en: "Independent" },
+
+  // CSV export
+  "export.csv": { sv: "Ladda ner CSV", en: "Download CSV" },
+
+  // Favorites
+  "favorites.title": { sv: "Mina skolor", en: "My Schools" },
+  "favorites.empty": {
+    sv: "Du har inga sparade skolor ännu. Klicka på stjärnikonen på en skolsida för att spara den.",
+    en: "You have no saved schools yet. Click the star icon on a school page to save it.",
+  },
+  "favorites.compareAll": { sv: "Jämför alla", en: "Compare all" },
+  "favorites.save": { sv: "Spara", en: "Save" },
+  "favorites.saved": { sv: "Sparad", en: "Saved" },
+
+  // Grammar fix (singular)
+  "muni.skola": { sv: "skola", en: "school" },
+
+  // About page
+  "about.title": { sv: "Om denna utforskare", en: "About this explorer" },
+  "about.subtitle": {
+    sv: "Ett öppet verktyg för att utforska svensk skolstatistik från Skolverkets SALSA-modell.",
+    en: "An open tool for exploring Swedish school statistics from Skolverket's SALSA model.",
+  },
 } as const;
 
 type TranslationKey = keyof typeof translations;

@@ -83,6 +83,20 @@ export interface NationalTrend {
 }
 
 
+export type SchoolType = "all" | "municipal" | "independent";
+
+function schoolTypeClause(alias: string, type: SchoolType): string {
+  if (type === "municipal") return ` AND ${alias}.huvudman = 'Kommunal'`;
+  if (type === "independent") return ` AND ${alias}.huvudman = 'Enskild'`;
+  return "";
+}
+
+function schoolTypeClauseJoin(alias: string, type: SchoolType): string {
+  if (type === "municipal") return ` AND ${alias}.is_public = 1`;
+  if (type === "independent") return ` AND ${alias}.is_public = 0`;
+  return "";
+}
+
 // === Query functions ===
 
 export function getMunicipalities(): Municipality[] {
@@ -298,7 +312,7 @@ export function getTopBottomSchools(year: number, limit = 10) {
   return { top, bottom };
 }
 
-export function getMunicipalityRanking(year: number) {
+export function getMunicipalityRanking(year: number, schoolType: SchoolType = "all") {
   return getDb()
     .prepare(
       `SELECT
@@ -310,7 +324,7 @@ export function getMunicipalityRanking(year: number) {
          COUNT(DISTINCT sr.school_code) as school_count
        FROM salsa_results sr
        JOIN school_units su ON su.school_code = sr.school_code
-       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.avg_merit_value IS NOT NULL
+       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.avg_merit_value IS NOT NULL${schoolTypeClauseJoin("su", schoolType)}
        GROUP BY su.municipality_code
        HAVING school_count >= 2
        ORDER BY avg_merit DESC`
@@ -323,4 +337,107 @@ export function getMunicipalityRanking(year: number) {
     avg_eligible: number;
     school_count: number;
   }>;
+}
+
+// === Sitemap queries ===
+
+export function getAllSchoolCodes(): string[] {
+  return (
+    getDb()
+      .prepare(`SELECT DISTINCT school_code FROM school_units ORDER BY school_code`)
+      .all() as Array<{ school_code: string }>
+  ).map((r) => r.school_code);
+}
+
+export function getAllMunicipalityCodes(): string[] {
+  return (
+    getDb()
+      .prepare(`SELECT code FROM municipalities ORDER BY code`)
+      .all() as Array<{ code: string }>
+  ).map((r) => r.code);
+}
+
+// === Dashboard with type filter ===
+
+export function getYearDistributionFiltered(year: number, schoolType: SchoolType = "all"): DistributionStats | null {
+  const typeClause = schoolTypeClause("sr", schoolType);
+  const result = getDb()
+    .prepare(
+      `SELECT
+         ROUND(AVG(sr.avg_merit_value), 1) as avg_merit,
+         MIN(sr.avg_merit_value) as min_merit,
+         MAX(sr.avg_merit_value) as max_merit,
+         ROUND(AVG(sr.residual_merit), 1) as avg_residual,
+         SUM(CASE WHEN sr.residual_merit > 0 THEN 1 ELSE 0 END) as positive_residual_count,
+         SUM(CASE WHEN sr.residual_merit < 0 THEN 1 ELSE 0 END) as negative_residual_count,
+         COUNT(*) as total_count
+       FROM salsa_results sr
+       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.avg_merit_value IS NOT NULL${typeClause}`
+    )
+    .get(year) as DistributionStats | undefined;
+
+  if (!result || result.total_count === 0) return null;
+
+  const medianRow = getDb()
+    .prepare(
+      `SELECT sr.avg_merit_value FROM salsa_results sr
+       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.avg_merit_value IS NOT NULL${typeClause}
+       ORDER BY sr.avg_merit_value
+       LIMIT 1 OFFSET ?`
+    )
+    .get(year, Math.floor(result.total_count / 2)) as { avg_merit_value: number } | undefined;
+
+  result.median_merit = medianRow?.avg_merit_value ?? result.avg_merit;
+  return result;
+}
+
+export function getTopBottomSchoolsFiltered(year: number, limit = 10, schoolType: SchoolType = "all") {
+  const typeClause = schoolTypeClause("sr", schoolType);
+  const top = getDb()
+    .prepare(
+      `SELECT sr.school_code, sr.school_name, sr.municipality_name,
+              sr.avg_merit_value, sr.predicted_merit_value, sr.residual_merit,
+              sr.pct_eligible_gymnasiet, sr.huvudman
+       FROM salsa_results sr
+       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.residual_merit IS NOT NULL${typeClause}
+       ORDER BY sr.residual_merit DESC LIMIT ?`
+    )
+    .all(year, limit) as (SalsaResult & { huvudman: string })[];
+
+  const bottom = getDb()
+    .prepare(
+      `SELECT sr.school_code, sr.school_name, sr.municipality_name,
+              sr.avg_merit_value, sr.predicted_merit_value, sr.residual_merit,
+              sr.pct_eligible_gymnasiet, sr.huvudman
+       FROM salsa_results sr
+       WHERE sr.year = ? AND sr.data_suppressed = 0 AND sr.residual_merit IS NOT NULL${typeClause}
+       ORDER BY sr.residual_merit ASC LIMIT ?`
+    )
+    .all(year, limit) as (SalsaResult & { huvudman: string })[];
+
+  return { top, bottom };
+}
+
+// === Favorites ===
+
+export function getSchoolSummaries(codes: string[]): SchoolSummary[] {
+  if (codes.length === 0) return [];
+  const limited = codes.slice(0, 50);
+  const placeholders = limited.map(() => "?").join(",");
+  return getDb()
+    .prepare(
+      `SELECT
+         su.school_code, su.name, su.municipality_name, su.is_public,
+         MAX(sr.year) as latest_year,
+         (SELECT avg_merit_value FROM salsa_results WHERE school_code = su.school_code ORDER BY year DESC LIMIT 1) as latest_merit,
+         (SELECT residual_merit FROM salsa_results WHERE school_code = su.school_code ORDER BY year DESC LIMIT 1) as latest_residual,
+         (SELECT pct_eligible_gymnasiet FROM salsa_results WHERE school_code = su.school_code ORDER BY year DESC LIMIT 1) as latest_eligible,
+         COUNT(DISTINCT sr.year) as year_count
+       FROM school_units su
+       LEFT JOIN salsa_results sr ON sr.school_code = su.school_code
+       WHERE su.school_code IN (${placeholders})
+       GROUP BY su.school_code
+       ORDER BY su.name`
+    )
+    .all(...limited) as SchoolSummary[];
 }

@@ -18,12 +18,12 @@ import {
 import { t, type Lang } from "@/lib/i18n";
 
 const COLORS = {
-  blue: "#3b82f6",
-  green: "#22c55e",
-  orange: "#f59e0b",
-  red: "#ef4444",
-  purple: "#8b5cf6",
-  teal: "#14b8a6",
+  blue: "#2563eb",
+  green: "#059669",
+  orange: "#d97706",
+  red: "#dc2626",
+  purple: "#7c3aed",
+  teal: "#0d9488",
   gray: "#6b7280",
 };
 
@@ -40,7 +40,16 @@ const tooltipStyle = {
   border: "1px solid #e5e7eb",
   borderRadius: "8px",
   fontSize: "13px",
+  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
 };
+
+const legendStyle = {
+  fontSize: "13px",
+  fontWeight: 500,
+  paddingTop: "8px",
+};
+
+const axisTickStyle = { fill: "#6b7280", fontSize: 12 };
 
 interface MeritChartProps {
   data: Array<{
@@ -70,16 +79,16 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
       <ResponsiveContainer>
         <ComposedChart data={filtered}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} domain={["auto", "auto"]} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} domain={["auto", "auto"]} />
           <Tooltip contentStyle={tooltipStyle} />
-          <Legend />
+          <Legend wrapperStyle={legendStyle} />
           <Area
             type="monotone"
             dataKey="predicted_merit_value"
             name={t("chart.predictedModel", lang)}
             fill={COLORS.blue}
-            fillOpacity={0.08}
+            fillOpacity={0.06}
             stroke="none"
           />
           <Line
@@ -88,8 +97,8 @@ export function MeritTrendChart({ data, lang }: MeritChartProps) {
             name={t("chart.actualMerit", lang)}
             stroke={COLORS.blue}
             strokeWidth={2.5}
-            dot={{ r: 3, fill: COLORS.blue }}
-            activeDot={{ r: 5 }}
+            dot={{ r: 3.5, fill: COLORS.blue, strokeWidth: 0 }}
+            activeDot={{ r: 5.5, strokeWidth: 2, stroke: "#fff" }}
           />
           <Line
             type="monotone"
@@ -127,8 +136,8 @@ export function ResidualChart({ data, lang }: MeritChartProps) {
       <ResponsiveContainer>
         <BarChart data={withColor}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1.5} />
           <Bar dataKey="residual_merit" name={t("chart.residual", lang)} radius={[4, 4, 0, 0]}>
@@ -166,29 +175,27 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
       <ResponsiveContainer>
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis
             yAxisId="left"
-            fontSize={12}
-            tick={{ fill: "#6b7280" }}
+            tick={axisTickStyle}
             label={{ value: t("chart.meritAxis", lang), angle: -90, position: "insideLeft", fill: "#6b7280", fontSize: 12 }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
-            fontSize={12}
-            tick={{ fill: "#6b7280" }}
+            tick={axisTickStyle}
             label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 12 }}
           />
           <Tooltip contentStyle={tooltipStyle} />
-          <Legend />
+          <Legend wrapperStyle={legendStyle} />
           <Area
             yAxisId="left"
             type="monotone"
             dataKey="avg_merit"
             name={t("chart.avgMeritValue", lang)}
             fill={COLORS.blue}
-            fillOpacity={0.1}
+            fillOpacity={0.08}
             stroke={COLORS.blue}
             strokeWidth={2.5}
           />
@@ -199,7 +206,7 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
             name={t("chart.avgEligible", lang)}
             stroke={COLORS.green}
             strokeWidth={2}
-            dot={{ r: 2 }}
+            dot={{ r: 2.5, fill: COLORS.green, strokeWidth: 0 }}
           />
         </ComposedChart>
       </ResponsiveContainer>
@@ -221,14 +228,14 @@ export function SchoolCountChart({
       <ResponsiveContainer>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
           <Bar
             dataKey="school_count"
             name={t("chart.schools", lang)}
             fill={COLORS.blue}
-            fillOpacity={0.7}
+            fillOpacity={0.75}
             radius={[4, 4, 0, 0]}
           />
         </BarChart>
@@ -260,10 +267,10 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
       <ResponsiveContainer>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
-          <Legend />
+          <Legend wrapperStyle={legendStyle} />
           {schools.map((s, i) => (
             <Line
               key={s.code}
@@ -272,7 +279,8 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
               name={s.name}
               stroke={PALETTE[i % PALETTE.length]}
               strokeWidth={2.5}
-              dot={{ r: 3 }}
+              dot={{ r: 3.5, fill: PALETTE[i % PALETTE.length], strokeWidth: 0 }}
+              activeDot={{ r: 5.5, strokeWidth: 2, stroke: "#fff" }}
               connectNulls
             />
           ))}
@@ -308,17 +316,17 @@ export function BackgroundChart({
       <ResponsiveContainer>
         <LineChart data={filtered}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} />
           <Tooltip contentStyle={tooltipStyle} />
-          <Legend />
+          <Legend wrapperStyle={legendStyle} />
           <Line
             type="monotone"
             dataKey="pct_foreign_background"
             name={t("chart.foreignBg", lang)}
             stroke={COLORS.orange}
             strokeWidth={2}
-            dot={{ r: 2 }}
+            dot={{ r: 2.5, fill: COLORS.orange, strokeWidth: 0 }}
             connectNulls
           />
           <Line
@@ -327,7 +335,7 @@ export function BackgroundChart({
             name={t("chart.boys", lang)}
             stroke={COLORS.teal}
             strokeWidth={2}
-            dot={{ r: 2 }}
+            dot={{ r: 2.5, fill: COLORS.teal, strokeWidth: 0 }}
             connectNulls
           />
           <Line
@@ -336,7 +344,7 @@ export function BackgroundChart({
             name={t("chart.newlyArrived", lang)}
             stroke={COLORS.purple}
             strokeWidth={2}
-            dot={{ r: 2 }}
+            dot={{ r: 2.5, fill: COLORS.purple, strokeWidth: 0 }}
             connectNulls
           />
         </LineChart>
@@ -367,16 +375,16 @@ export function EligibilityChart({
       <ResponsiveContainer>
         <ComposedChart data={filtered}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="year" fontSize={12} tick={{ fill: "#6b7280" }} />
-          <YAxis fontSize={12} tick={{ fill: "#6b7280" }} domain={[0, 100]} />
+          <XAxis dataKey="year" tick={axisTickStyle} />
+          <YAxis tick={axisTickStyle} domain={[0, 100]} />
           <Tooltip contentStyle={tooltipStyle} />
-          <Legend />
+          <Legend wrapperStyle={legendStyle} />
           <Area
             type="monotone"
             dataKey="pct_eligible_gymnasiet"
             name={t("chart.actualEligible", lang)}
             fill={COLORS.green}
-            fillOpacity={0.15}
+            fillOpacity={0.1}
             stroke={COLORS.green}
             strokeWidth={2}
           />

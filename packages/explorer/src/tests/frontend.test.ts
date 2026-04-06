@@ -46,7 +46,7 @@ async function waitForServer(maxWaitMs = 30_000): Promise<void> {
 
 async function fetchPage(path: string): Promise<{ status: number; html: string; headers: Headers }> {
   const resp = await fetch(`${BASE}${path}`, {
-    headers: { Accept: "text/html" },
+    headers: { Accept: "text/html", Cookie: "lang=en" },
     signal: AbortSignal.timeout(10_000),
   });
   const html = await resp.text();
@@ -167,7 +167,7 @@ describe("Dashboard /", () => {
     const { html } = await fetchPage("/");
     assertContains(html, "<!DOCTYPE html");
     assertContains(html, "<html");
-    assertContains(html, "lang=\"sv\"");
+    assertContains(html, "lang=\"en\"");
     assertContains(html, "</html>");
   });
 });
@@ -183,9 +183,9 @@ describe("Municipalities /municipalities", () => {
 
   it("should list municipalities with counts", async () => {
     const { html } = await fetchPage("/municipalities");
-    assertContains(html, "Kommuner");
+    assertContains(html, "Municipalities");
     // Should contain known municipality names
-    assertContains(html, "schools"); // "X schools" text
+    assertContains(html, "school"); // "X schools" or "X school" text
   });
 
   it("should link to municipality detail pages", async () => {

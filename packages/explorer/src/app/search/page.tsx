@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { LiveSearch } from "@/components/live-search";
 import { getLangFromCookie, t } from "@/lib/i18n";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  const title = t("meta.search.title", lang);
+  const description = t("meta.search.description", lang);
+  return {
+    title,
+    description,
+    openGraph: { title, description, url: "https://skolsalsa.se/search", type: "website", siteName: "SkolSalsa" },
+  };
+}
 
 export default async function SearchPage({
   searchParams,

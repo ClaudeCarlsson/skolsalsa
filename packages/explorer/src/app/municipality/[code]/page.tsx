@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import {
   Card,
@@ -13,7 +14,33 @@ import {
 } from "@/lib/db";
 import { TrendChartClient } from "@/components/trend-chart-client";
 import { ResidualBadge } from "@/components/residual-badge";
-import { getLangFromCookie, t } from "@/lib/i18n";
+import { CsvExport } from "@/components/csv-export";
+import { FavoriteButton } from "@/components/favorite-button";
+import { getLangFromCookie, t, tf } from "@/lib/i18n";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ code: string }>;
+}): Promise<Metadata> {
+  const { code } = await params;
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  try {
+    const schools = getSchoolsByMunicipality(code);
+    if (schools.length === 0) return { title: t("muni.notFound", lang) };
+    const name = schools[0].municipality_name;
+    const title = tf("meta.muni.title", lang, { name });
+    const description = tf("meta.muni.description", lang, { name, count: schools.length });
+    return {
+      title,
+      description,
+      openGraph: { title, description, url: `https://skolsalsa.se/municipality/${code}`, type: "website", siteName: "SkolSalsa" },
+    };
+  } catch {
+    return { title: "SkolSalsa" };
+  }
+}
 
 export default async function MunicipalityPage({
   params,
@@ -85,6 +112,23 @@ export default async function MunicipalityPage({
         </Card>
       )}
 
+      <div className="flex items-center justify-between mb-2">
+        <div />
+        <CsvExport
+          filename={`${municipalityName.replace(/[^a-zA-ZåäöÅÄÖ0-9]/g, "_")}_skolor_${schools[0]?.latest_year ?? ""}.csv`}
+          headers={[t("common.school", lang), t("common.type", lang), t("common.latestYear", lang), t("common.merit", lang), t("common.residual", lang), t("common.eligible", lang), t("common.years", lang)]}
+          rows={schools.map((s) => [
+            s.name,
+            s.is_public ? t("common.kommunal", lang) : t("common.enskild", lang),
+            s.latest_year,
+            s.latest_merit,
+            s.latest_residual,
+            s.latest_eligible,
+            s.year_count,
+          ])}
+          lang={lang}
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -128,6 +172,9 @@ export default async function MunicipalityPage({
                 </td>
                 <td className="py-2 px-3 text-right tabular-nums text-muted-foreground">
                   {s.year_count}
+                </td>
+                <td className="py-1.5 px-2 text-center">
+                  <FavoriteButton schoolCode={s.school_code} lang={lang} size="sm" />
                 </td>
               </tr>
             ))}

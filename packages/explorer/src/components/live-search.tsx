@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ResidualBadge } from "@/components/residual-badge";
+import { FavoriteButton } from "@/components/favorite-button";
 import { t, type Lang } from "@/lib/i18n";
 import type { SchoolSummary } from "@/lib/db";
 
@@ -121,6 +122,9 @@ export function LiveSearch({ initialQuery = "", lang }: { initialQuery?: string;
                   </td>
                   <td className="py-2 px-3 text-right tabular-nums text-muted-foreground">
                     {s.year_count}
+                  </td>
+                  <td className="py-1.5 px-2 text-center">
+                    <FavoriteButton schoolCode={s.school_code} lang={lang} size="sm" />
                   </td>
                 </tr>
               ))}

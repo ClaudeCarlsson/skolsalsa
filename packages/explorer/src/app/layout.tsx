@@ -79,6 +79,12 @@ export default async function RootLayout({
               >
                 {t("nav.about", lang)}
               </Link>
+              <Link
+                href="/favorites"
+                className="hover:text-foreground transition"
+              >
+                {t("nav.favorites", lang)}
+              </Link>
             </nav>
             <LangToggle lang={lang} />
           </div>

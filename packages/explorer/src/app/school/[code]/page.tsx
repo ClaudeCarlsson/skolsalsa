@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import {
   Card,
@@ -11,7 +12,42 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getSchool, getSchoolResults } from "@/lib/db";
 import { SchoolCharts } from "./school-charts";
-import { getLangFromCookie, t } from "@/lib/i18n";
+import { CsvExport } from "@/components/csv-export";
+import { FavoriteButton } from "@/components/favorite-button";
+import { getLangFromCookie, t, tf } from "@/lib/i18n";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ code: string }>;
+}): Promise<Metadata> {
+  const { code } = await params;
+  const cookieStore = await cookies();
+  const lang = getLangFromCookie(cookieStore.get("lang")?.value);
+  try {
+    const school = getSchool(code);
+    const results = getSchoolResults(code);
+    if (!school) return { title: t("school.notFound", lang) };
+    const latest = results.length > 0 ? results[results.length - 1] : null;
+    const title = tf("meta.school.title", lang, {
+      name: school.name,
+      municipality: school.municipality_name,
+    });
+    const description = tf("meta.school.description", lang, {
+      name: school.name,
+      municipality: school.municipality_name,
+      merit: latest?.avg_merit_value ?? "\u2013",
+      residual: latest?.residual_merit ?? "\u2013",
+    });
+    return {
+      title,
+      description,
+      openGraph: { title, description, url: `https://skolsalsa.se/school/${code}`, type: "website", siteName: "SkolSalsa" },
+    };
+  } catch {
+    return { title: "SkolSalsa" };
+  }
+}
 
 export default async function SchoolPage({
   params,
@@ -72,7 +108,10 @@ export default async function SchoolPage({
             &larr; {municipality}
           </Link>
         )}
-        <h1 className="text-2xl font-bold mt-2">{name}</h1>
+        <div className="flex items-center gap-3 mt-2">
+          <h1 className="text-2xl font-bold">{name}</h1>
+          <FavoriteButton schoolCode={code} lang={lang} />
+        </div>
         <div className="flex items-center gap-2 mt-1">
           {municipality && (
             <span className="text-muted-foreground">{municipality}</span>
@@ -157,6 +196,17 @@ export default async function SchoolPage({
         </div>
       )}
 
+      {/* Residual explanation */}
+      {latest?.residual_merit !== null && latest?.residual_merit !== undefined && (
+        <p className="text-sm text-muted-foreground -mt-2">
+          {latest.residual_merit > 0
+            ? tf("school.residualExplainPositive", lang, { value: latest.residual_merit })
+            : latest.residual_merit < 0
+            ? tf("school.residualExplainNegative", lang, { value: Math.abs(latest.residual_merit) })
+            : t("school.residualExplainZero", lang)}
+        </p>
+      )}
+
       {/* Charts */}
       {results.length > 1 && (
         <>
@@ -215,8 +265,26 @@ export default async function SchoolPage({
 
       {/* Data table */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">{t("school.allData", lang)}</CardTitle>
+          <CsvExport
+            filename={`${name.replace(/[^a-zA-ZåäöÅÄÖ0-9]/g, "_")}_salsa.csv`}
+            headers={[t("common.year", lang), t("common.parentsEd", lang), t("common.newlyArrived", lang), t("common.foreignBg", lang), t("common.boys", lang), t("common.eligible", lang), t("common.predElig", lang), t("common.resElig", lang), t("common.merit", lang), t("common.predMerit", lang), t("common.resMerit", lang)]}
+            rows={results.map((r) => [
+              r.year,
+              r.pct_parents_higher_ed,
+              r.pct_newly_arrived,
+              r.pct_foreign_background,
+              r.pct_boys,
+              r.pct_eligible_gymnasiet,
+              r.predicted_eligible,
+              r.residual_eligible,
+              r.avg_merit_value,
+              r.predicted_merit_value,
+              r.residual_merit,
+            ])}
+            lang={lang}
+          />
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
