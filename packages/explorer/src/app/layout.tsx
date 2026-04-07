@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { getLangFromCookie, t } from "@/lib/i18n";
 import { LangToggle } from "@/components/lang-toggle";
+import { DesktopNav } from "@/components/desktop-nav";
 import { MobileNav } from "@/components/mobile-nav";
 import "./globals.css";
 
@@ -123,29 +124,7 @@ export default async function RootLayout({
             <Link href="/" className="font-bold text-lg shrink-0">
               SkolSalsa
             </Link>
-            <nav className="hidden md:flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-              <Link href="/" className="hover:text-foreground transition">
-                {t("nav.dashboard", lang)}
-              </Link>
-              <Link href="/municipalities" className="hover:text-foreground transition">
-                {t("nav.municipalities", lang)}
-              </Link>
-              <Link href="/search" className="hover:text-foreground transition">
-                {t("nav.search", lang)}
-              </Link>
-              <Link href="/compare" className="hover:text-foreground transition">
-                {t("nav.compare", lang)}
-              </Link>
-              <Link href="/trends" className="hover:text-foreground transition">
-                {t("nav.trends", lang)}
-              </Link>
-              <Link href="/about" className="hover:text-foreground transition">
-                {t("nav.about", lang)}
-              </Link>
-              <Link href="/favorites" className="hover:text-foreground transition">
-                {t("nav.favorites", lang)}
-              </Link>
-            </nav>
+            <DesktopNav lang={lang} />
             <div className="ml-auto flex items-center gap-2">
               <LangToggle lang={lang} />
               <MobileNav lang={lang} />

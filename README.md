@@ -50,16 +50,6 @@ Next.js 16 application with Inter font, server components reading directly from 
 - No focus outlines on chart click/interaction
 - Charts use Inter font at 14-15px for axes, legends, and tooltips
 
-**SEO:**
-- Dynamic `sitemap.xml` with `lastModified` dates for all 1,800+ pages (schools, municipalities, static)
-- `robots.txt` with sitemap reference
-- Per-page `<title>`, `<meta description>`, canonical URLs, and Open Graph tags in both languages
-- Twitter Card meta tags on every page
-- JSON-LD structured data: `WebSite` with `SearchAction` (sitelinks search box), `Dataset` schema, `Organization`, `BreadcrumbList` on school/municipality pages, `EducationalOrganization` on school pages
-- Keyword-dense meta descriptions targeting Swedish search terms (meritvärde, residual, gymnasiebehörighet, grundskola, SALSA-modellen)
-- `robots` meta with aggressive `max-snippet: -1`, `max-image-preview: large`
-- `hreflang` alternate language links
-
 **Mobile:**
 - Responsive hamburger menu with full-screen overlay, active page highlighting, closes on link tap
 - Sticky header pinned on scroll
