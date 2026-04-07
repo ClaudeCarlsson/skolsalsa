@@ -36,6 +36,8 @@ export async function generateMetadata({
       title,
       description,
       openGraph: { title, description, url: `https://skolsalsa.se/municipality/${code}`, type: "website", siteName: "SkolSalsa" },
+      twitter: { card: "summary", title, description },
+      alternates: { canonical: `/municipality/${code}` },
     };
   } catch {
     return { title: "SkolSalsa" };
@@ -88,6 +90,21 @@ export default async function MunicipalityPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 space-y-6">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "SkolSalsa", item: "https://skolsalsa.se" },
+              { "@type": "ListItem", position: 2, name: lang === "sv" ? "Kommuner" : "Municipalities", item: "https://skolsalsa.se/municipalities" },
+              { "@type": "ListItem", position: 3, name: municipalityName },
+            ],
+          }),
+        }}
+      />
       <div>
         <Link
           href="/municipalities"

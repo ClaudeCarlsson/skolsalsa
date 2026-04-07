@@ -19,7 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: "/trends" },
     openGraph: { title, description, url: "https://skolsalsa.se/trends", type: "website", siteName: "SkolSalsa" },
+    twitter: { card: "summary", title, description },
   };
 }
 

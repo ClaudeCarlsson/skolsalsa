@@ -1,16 +1,24 @@
 import type { MetadataRoute } from "next";
-import { getAllSchoolCodes, getAllMunicipalityCodes } from "@/lib/db";
+import { getAllSchoolCodes, getAllMunicipalityCodes, getDashboardStats } from "@/lib/db";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://skolsalsa.se";
 
+  let lastmod: string;
+  try {
+    const stats = getDashboardStats();
+    lastmod = `${stats.max_year}-09-01`;
+  } catch {
+    lastmod = new Date().toISOString().split("T")[0];
+  }
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: "yearly", priority: 1.0 },
-    { url: `${baseUrl}/municipalities`, changeFrequency: "yearly", priority: 0.5 },
-    { url: `${baseUrl}/search`, changeFrequency: "yearly", priority: 0.5 },
-    { url: `${baseUrl}/compare`, changeFrequency: "yearly", priority: 0.5 },
-    { url: `${baseUrl}/trends`, changeFrequency: "yearly", priority: 0.5 },
-    { url: `${baseUrl}/about`, changeFrequency: "yearly", priority: 0.5 },
+    { url: baseUrl, lastModified: lastmod, changeFrequency: "yearly", priority: 1.0 },
+    { url: `${baseUrl}/municipalities`, lastModified: lastmod, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${baseUrl}/trends`, lastModified: lastmod, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${baseUrl}/search`, lastModified: lastmod, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${baseUrl}/compare`, lastModified: lastmod, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${baseUrl}/about`, lastModified: lastmod, changeFrequency: "yearly", priority: 0.5 },
   ];
 
   let schoolPages: MetadataRoute.Sitemap = [];
@@ -20,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const schoolCodes = getAllSchoolCodes();
     schoolPages = schoolCodes.map((code) => ({
       url: `${baseUrl}/school/${code}`,
+      lastModified: lastmod,
       changeFrequency: "yearly" as const,
       priority: 0.7,
     }));
@@ -27,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const muniCodes = getAllMunicipalityCodes();
     muniPages = muniCodes.map((code) => ({
       url: `${baseUrl}/municipality/${code}`,
+      lastModified: lastmod,
       changeFrequency: "yearly" as const,
       priority: 0.7,
     }));

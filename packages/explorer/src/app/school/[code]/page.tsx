@@ -42,7 +42,9 @@ export async function generateMetadata({
     return {
       title,
       description,
+      alternates: { canonical: `/school/${code}` },
       openGraph: { title, description, url: `https://skolsalsa.se/school/${code}`, type: "website", siteName: "SkolSalsa" },
+      twitter: { card: "summary", title, description },
     };
   } catch {
     return { title: "SkolSalsa" };
@@ -99,6 +101,33 @@ export default async function SchoolPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 space-y-6">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "SkolSalsa", item: "https://skolsalsa.se" },
+                  ...(municipality && school?.municipality_code
+                    ? [{ "@type": "ListItem", position: 2, name: municipality, item: `https://skolsalsa.se/municipality/${school.municipality_code}` }]
+                    : []),
+                  { "@type": "ListItem", position: municipality ? 3 : 2, name },
+                ],
+              },
+              {
+                "@type": "EducationalOrganization",
+                name,
+                address: { "@type": "PostalAddress", addressLocality: municipality, addressCountry: "SE" },
+                url: `https://skolsalsa.se/school/${code}`,
+              },
+            ],
+          }),
+        }}
+      />
       <div>
         {municipality && (
           <Link

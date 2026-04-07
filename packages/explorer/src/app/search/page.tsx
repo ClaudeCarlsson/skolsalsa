@@ -11,7 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: "/search" },
     openGraph: { title, description, url: "https://skolsalsa.se/search", type: "website", siteName: "SkolSalsa" },
+    twitter: { card: "summary", title, description },
   };
 }
 
