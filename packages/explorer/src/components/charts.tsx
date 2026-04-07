@@ -62,12 +62,15 @@ const MODEL_CHANGES = [
   { year: 2016, key: "chart.model4" as const },
 ];
 
+// Module-level flag to suppress chart tooltip when hovering a model dot
+let modelDotHovered = false;
+
 function ModelChangeDot({ cx, cy, label }: { cx: number; cy: number; label: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <g
-      onMouseEnter={(e) => { e.stopPropagation(); setHovered(true); }}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => { e.stopPropagation(); modelDotHovered = true; setHovered(true); }}
+      onMouseLeave={() => { modelDotHovered = false; setHovered(false); }}
       style={{ cursor: "pointer" }}
     >
       <circle cx={cx} cy={cy} r={5} fill="#8b5cf6" opacity={0.85} />
@@ -111,17 +114,20 @@ function ModelChangeLines({ years, lang, yAxisId }: { years: number[]; lang: Lan
   );
 }
 
-// Custom tooltip that deduplicates entries sharing the same dataKey
+// Custom tooltip: hides when model dot is hovered, filters out unnamed/duplicate entries
 function DeduplicatedTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ dataKey: string; name: string; value: number; color: string }>; label?: string }) {
-  if (!active || !payload?.length) return null;
+  if (!active || !payload?.length || modelDotHovered) return null;
   const seen = new Set<string>();
   const unique = payload.filter((entry) => {
+    // Skip entries where name is the raw dataKey (unnamed Area fill)
+    if (entry.name === entry.dataKey) return false;
     if (seen.has(entry.dataKey)) return false;
     seen.add(entry.dataKey);
     return true;
   });
+  if (unique.length === 0) return null;
   return (
-    <div style={tooltipStyle} className="p-2.5">
+    <div style={{ ...tooltipStyle, padding: "8px 12px" }}>
       <p style={{ fontWeight: 600, marginBottom: 4, fontFamily: CHART_FONT }}>{label}</p>
       {unique.map((entry, i) => (
         <p key={i} style={{ color: entry.color, fontSize: 13, fontFamily: CHART_FONT, margin: "2px 0" }}>
@@ -220,7 +226,7 @@ export function ResidualChart({ data, lang }: MeritChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1.5} />
           <Bar dataKey="residual_merit" name={t("chart.residual", lang)} radius={[4, 4, 0, 0]}>
             {withColor.map((entry, i) => (
@@ -270,7 +276,7 @@ export function NationalTrendChart({ data, lang }: TrendChartProps) {
             tick={axisTickStyle}
             label={{ value: t("chart.eligibleAxis", lang), angle: 90, position: "insideRight", fill: "#6b7280", fontSize: 14, fontFamily: CHART_FONT }}
           />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Legend wrapperStyle={legendStyle} />
           <Area
             yAxisId="left"
@@ -314,7 +320,7 @@ export function SchoolCountChart({
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Bar
             dataKey="school_count"
             name={t("chart.schools", lang)}
@@ -354,7 +360,7 @@ export function CompareChart({ data, schools, lang }: CompareChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Legend wrapperStyle={legendStyle} />
           {schools.map((s, i) => (
             <Line
@@ -404,7 +410,7 @@ export function BackgroundChart({
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Legend wrapperStyle={legendStyle} />
           <Line
             type="monotone"
@@ -464,7 +470,7 @@ export function EligibilityChart({
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="year" tick={axisTickStyle} />
           <YAxis tick={axisTickStyle} domain={[0, 100]} />
-          <Tooltip contentStyle={tooltipStyle} />
+          <Tooltip content={<DeduplicatedTooltip />} />
           <Legend wrapperStyle={legendStyle} />
           <Area
             type="monotone"
