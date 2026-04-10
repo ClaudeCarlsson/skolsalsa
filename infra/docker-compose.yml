@@ -1,11 +1,11 @@
 services:
-  explorer:
+  skolsalsa-app:
     build:
       context: ..
       target: explorer
     restart: unless-stopped
     networks:
-      - skolsalsa
+      - web
     expose:
       - "3000"
     volumes:
@@ -19,27 +19,6 @@ services:
       timeout: 5s
       retries: 3
 
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    networks:
-      - skolsalsa
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      explorer:
-        condition: service_healthy
-
 networks:
-  skolsalsa:
-    name: skolsalsa
-
-volumes:
-  caddy_data:
-  caddy_config:
+  web:
+    external: true
